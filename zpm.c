@@ -75,7 +75,7 @@ int generate_plugin_entry(char* plugin_name) {
     char* zpmrc = malloc(PATH_MAX);
     zpmrc = get_zpmrc_path();
     FILE* store = fopen(zpmrc,"ab+");
-	return fwrite(plugin_entry, strlen(plugin_entry), 1, store);
+    return fwrite(plugin_entry, strlen(plugin_entry), 1, store);
 }
 
 char* get_plugin_list_path() {
@@ -95,7 +95,7 @@ int plugin_list_add_item(char* plugin_name) {
     char* plugin_list = malloc(PATH_MAX);
     plugin_list = get_plugin_list_path();
     FILE* store = fopen(plugin_list,"ab+");
-	return fwrite(plugin_item, strlen(plugin_item), 1, store);
+    return fwrite(plugin_item, strlen(plugin_item), 1, store);
 
 }
 
@@ -115,12 +115,12 @@ int local_clone_exists(char* plugin_name) {
 int zpm_configuration_exists() {
     char* zpmrc_path = get_zpmrc_path();
 
-	FILE *file;
-	if ((file = fopen(zpmrc_path, "r")) == NULL) {
-		return -1;
-	} else {
-		fclose(file);
-	}
+    FILE *file;
+    if ((file = fopen(zpmrc_path, "r")) == NULL) {
+        return -1;
+    } else {
+        fclose(file);
+    }
 
     return 0;
 }
@@ -148,8 +148,8 @@ int locally_clone_plugin(char* plugin_name) {
 }
 
 char* get_zpm_plugin_list() {
-	char* plugin_list_path = get_plugin_list_path();
-	char* listing = malloc(1024);
+    char* plugin_list_path = get_plugin_list_path();
+    char* listing = malloc(1024);
     FILE* list;
 
     list = fopen(plugin_list_path, "rb");
@@ -176,7 +176,7 @@ int main(int argc, char* argv[]) {
     char* plugin_name = malloc(PATH_MAX);
 
     if (strstr(plugin_name_or_command, "reset")) {
-		unlink(get_plugin_list_path());
+        unlink(get_plugin_list_path());
         unlink(get_zpmrc_path());
         return 0;
 
