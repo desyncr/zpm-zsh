@@ -197,8 +197,9 @@ int main(int argc, char* argv[]) {
         char* install = malloc(1024);
         strcpy(install, "Installing ");
         strcat(install, plugin_name);
-        strcat(install, "...");
+        strcat(install, "... ");
         printf("%s", install);
+        fflush(stdout);
 
         status = locally_clone_plugin(plugin_name);
     }
