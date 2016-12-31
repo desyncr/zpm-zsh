@@ -142,7 +142,7 @@ int locally_clone_plugin(char* plugin_name) {
     strcat(command, repository_url);
     strcat(command, " ");
     strcat(command, clone_destination);
-    strcat(command, "\n");
+    strcat(command, " &> /dev/null\n");
 
     return system(command);
 }
@@ -160,36 +160,55 @@ char* get_zpm_plugin_list() {
     return listing;
 }
 
+int plugins_update_local_clone() {
+    // iterate over plugins_list
+    // exec git pull --git-dir=
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     if (argc <= 1) {
-		if (zpm_configuration_exists() == 0) {
-			printf("%s\n", get_zpm_plugin_list());
-			return 0;
-		} else {
-			printf("%s\n", "Usage:\n\tzpm 'zsh-users/zsh-syntax-highlighting'");
-			return 1;
-		}
+        printf("%s\n", "Usage:\n\tzpm 'zsh-users/zsh-syntax-highlighting'");
+        return 1;
     }
 
     char* plugin_name_or_command = argv[1];
     char* plugin_name = malloc(PATH_MAX);
 
-    if (strstr(plugin_name_or_command, "--reset")) {
+    if (strstr(plugin_name_or_command, "reset")) {
 		unlink(get_plugin_list_path());
         unlink(get_zpmrc_path());
         return 0;
+
+    } else if (strstr(plugin_name_or_command, "update")) {
+        plugins_update_local_clone();
+        return 0;
+
+    } else if (strstr(plugin_name_or_command, "list")) {
+        printf("%s\n", get_zpm_plugin_list());
+        return 0;
+
     } else {
         strcpy(plugin_name, plugin_name_or_command);
     }
 
     int status = 0;
     if (local_clone_exists(plugin_name)) {
+        char* install = malloc(1024);
+        strcpy(install, "Installing ");
+        strcat(install, plugin_name);
+        strcat(install, "...");
+        printf("%s", install);
+
         status = locally_clone_plugin(plugin_name);
     }
 
     if (status == 0) {
+        printf("%s\n", "Done.");
         generate_plugin_entry(plugin_name);
         plugin_list_add_item(plugin_name);
+    } else {
+        printf("%s\n", "Error!");
     }
 
     return status;
