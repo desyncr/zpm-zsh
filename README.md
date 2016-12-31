@@ -47,3 +47,9 @@ zpm
 
 ```
 
+
+## TODO
+
+  - [ ] Update command
+  - [ ] List command show version (hash)
+
