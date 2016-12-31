@@ -43,7 +43,7 @@ zpm --reset
 To see a list of installed plugins:
 
 ```sh
-zpm
+zpm --list
 
 ```
 
