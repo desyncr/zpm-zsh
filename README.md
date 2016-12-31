@@ -47,6 +47,15 @@ zpm
 
 ```
 
+## Development
+
+Running tests:
+
+```sh
+make test
+```
+
+You'll need zcram (or cram) installed and available in `PATH`.
 
 ## TODO
 
