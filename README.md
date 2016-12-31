@@ -37,13 +37,13 @@ source ~/.zpmrc
 If you add or remove new plugins you will need to:
 
 ```sh
-zpm --reset
+zpm reset
 ```
 
 To see a list of installed plugins:
 
 ```sh
-zpm --list
+zpm list
 
 ```
 
