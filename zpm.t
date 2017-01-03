@@ -7,6 +7,12 @@ Command without arguments gives an error if there are no plugins.
     zpm 'zsh-users/zsh-syntax-highlighting'
     [1]    
 
+Command `list` without any plugin registered show a message.
+
+    $ ./zpm reset
+    $ ./zpm list
+    Nothing to show.
+
 Can create a new list.
 
     $ ./zpm reset

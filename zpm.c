@@ -154,9 +154,12 @@ char* get_zpm_plugin_list() {
     FILE* list;
 
     list = fopen(plugin_list_path, "rb");
-    fread(listing, 1, 1024, list);
-
-    fclose(list);
+    if (list != NULL) {
+        fread(listing, 1, 1024, list);
+        fclose(list);
+    } else {
+        strcpy(listing, "Nothing to show.");
+    }
 
     return listing;
 }
