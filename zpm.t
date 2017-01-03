@@ -55,6 +55,15 @@ Do not allow duplicate plugin entries/items.
     $ ./zpm list
     rupa/z
 
+Can install multiple plugins under the same user.
+
+    $ ./zpm reset
+    $ ./zpm "zsh-users/zsh-syntax-highlighting"
+    $ ./zpm "zsh-users/zsh-autosuggestions"
+    $ ls -l $HOME/.zpm/plugins/zsh-users/
+    zsh-syntax-highlighting
+    zsh-autosuggestions
+
 Remove spurius files.
 
     $ ./zpm reset
