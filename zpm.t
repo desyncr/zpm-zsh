@@ -36,13 +36,24 @@ List command show list of installed plugins.
 
 Already cloned plugins show still display "installing..." text.
 
-    $ rm -rf ~/.zpm/plugins
+    $ rm -rf ~/.zpm/plugins/rupa/
     $ ./zpm reset
     $ ./zpm "rupa/z"
     Installing rupa/z... Done.
     
     $ ./zpm "rupa/z"
     Installing rupa/z... Done.
+
+Do not allow duplicate plugin entries/items.
+
+#    $ ./zpm reset
+#    $ ./zpm "rupa/z" &> /dev/null
+#    $ ./zpm list
+#    rupa/z
+
+    $ ./zpm "rupa/z" &> /dev/null
+    $ ./zpm list
+    rupa/z
 
 Remove spurius files.
 
