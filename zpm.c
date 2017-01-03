@@ -197,14 +197,14 @@ int main(int argc, char* argv[]) {
     }
 
     int status = 0;
-    if (local_clone_exists(plugin_name)) {
-        char* install = malloc(1024);
-        strcpy(install, "Installing ");
-        strcat(install, plugin_name);
-        strcat(install, "... ");
-        printf("%s", install);
-        fflush(stdout);
+    char* install = malloc(1024);
+    strcpy(install, "Installing ");
+    strcat(install, plugin_name);
+    strcat(install, "... ");
+    printf("%s", install);
+    fflush(stdout);
 
+    if (local_clone_exists(plugin_name)) {
         status = locally_clone_plugin(plugin_name);
     }
 

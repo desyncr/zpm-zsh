@@ -34,6 +34,16 @@ List command show list of installed plugins.
     zsh-users/zsh-syntax-highlighting
     rupa/z
 
+Already cloned plugins show still display "installing..." text.
+
+    $ rm -rf ~/.zpm/plugins
+    $ ./zpm reset
+    $ ./zpm "rupa/z"
+    Installing rupa/z... Done.
+    
+    $ ./zpm "rupa/z"
+    Installing rupa/z... Done.
+
 Remove spurius files.
 
     $ ./zpm reset
