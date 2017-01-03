@@ -1,5 +1,5 @@
 make:
-	gcc -o zpm -g zpm.c
+	gcc -Wall -o zpm -g zpm.c
 
 test: make
 	zcram ./zpm.t

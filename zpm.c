@@ -15,7 +15,7 @@
 
 char* generate_plugin_path(char* plugin_name) {
     char* plugin_path = malloc(PATH_MAX);
-    strcat(plugin_path, getenv("HOME"));
+    strcpy(plugin_path, getenv("HOME"));
     strcat(plugin_path, "/.zpm/plugins/");
     strcat(plugin_path, plugin_name);
 
@@ -27,6 +27,7 @@ char* get_plugin_entry_point(char* plugin_name) {
     struct dirent *ent;
     char* plugin_path = generate_plugin_path(plugin_name);
     char* plugin_entry_point = malloc(PATH_MAX);
+    strcpy(plugin_entry_point, "");
 
     if ((dir = opendir(plugin_path)) != NULL) {
       while (strlen(plugin_entry_point) == 0
@@ -53,7 +54,7 @@ char* get_plugin_entry_point(char* plugin_name) {
 char* get_zpmrc_path() {
     char* zpmrc = malloc(PATH_MAX);
 
-    strcat(zpmrc, getenv("HOME"));
+    strcpy(zpmrc, getenv("HOME"));
     strcat(zpmrc, "/.zpmrc");
 
     return zpmrc;
@@ -66,7 +67,7 @@ int generate_plugin_entry(char* plugin_name) {
 
     char* plugin_entry_point = get_plugin_entry_point(plugin_name);
 
-    strcat(plugin_entry, "source ");
+    strcpy(plugin_entry, "source ");
     strcat(plugin_entry, plugin_path);
     strcat(plugin_entry, "/");
     strcat(plugin_entry, plugin_entry_point);
@@ -127,7 +128,7 @@ int zpm_configuration_exists() {
 
 char* generate_repository_url(char* plugin_name) {
     char* url = malloc(PATH_MAX);
-    strcat(url, "https://github.com/");
+    strcpy(url, "https://github.com/");
     strcat(url, plugin_name);
 
     return url;
@@ -138,11 +139,11 @@ int locally_clone_plugin(char* plugin_name) {
     char* clone_destination = generate_plugin_path(plugin_name);
 
     char* command = malloc(PATH_MAX);
-    strcat(command, "git clone --recursive --depth=1 ");
+    strcpy(command, "git clone --recursive --depth=1 ");
     strcat(command, repository_url);
     strcat(command, " ");
     strcat(command, clone_destination);
-    strcat(command, " &> /dev/null\n");
+    strcat(command, " > /dev/null 2>&1");
 
     return system(command);
 }
