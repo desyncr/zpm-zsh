@@ -17,13 +17,13 @@ Can create a new list.
 
     $ ./zpm reset
     $ ./zpm "zsh-users/zsh-syntax-highlighting"
-    $ cat $HOME/.zpmrc
+    $ cat $HOME/.zpm-init.zsh
     source .*/.zpm/plugins/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh (re)
 
 Subsequentially add a new item to the list.
 
     $ ./zpm "rupa/z"
-    $ cat $HOME/.zpmrc
+    $ cat $HOME/.zpm-init.zsh
     source .*/.zpm/plugins/zsh-users/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh (re)
     source .*/.zpm/plugins/rupa/z/z.sh (re)
 

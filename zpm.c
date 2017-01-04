@@ -51,16 +51,20 @@ char* get_plugin_entry_point(char* plugin_name) {
     return plugin_entry_point;
 }
 
-char* get_zpmrc_path() {
-    char* zpmrc = malloc(PATH_MAX);
+char* get_zpm_init_path() {
+    char* zpm_init = malloc(PATH_MAX);
 
-    strcpy(zpmrc, getenv("HOME"));
-    strcat(zpmrc, "/.zpmrc");
+    strcpy(zpm_init, getenv("HOME"));
+    strcat(zpm_init, "/.zpm-init.zsh");
 
-    return zpmrc;
+    return zpm_init;
 }
 
 int generate_plugin_entry(char* plugin_name) {
+    char* zpm_init = malloc(PATH_MAX);
+    zpm_init = get_zpm_init_path();
+    FILE* store = fopen(zpm_init,"ab+");
+
     char* plugin_path = malloc(PATH_MAX);
     plugin_path = generate_plugin_path(plugin_name);
     char* plugin_entry = malloc(PATH_MAX);
@@ -72,10 +76,6 @@ int generate_plugin_entry(char* plugin_name) {
     strcat(plugin_entry, "/");
     strcat(plugin_entry, plugin_entry_point);
     strcat(plugin_entry, "\n");
-
-    char* zpmrc = malloc(PATH_MAX);
-    zpmrc = get_zpmrc_path();
-    FILE* store = fopen(zpmrc,"ab+");
 
     char* plugin_entry_list = malloc(PATH_MAX);
     fread(plugin_entry_list, 1, 1024, store);
@@ -118,7 +118,7 @@ int mkdir_p(const char *path) {
     /* Adapted from http://stackoverflow.com/a/2336245/119527 */
     const size_t len = strlen(path);
     char _path[PATH_MAX];
-    char *p; 
+    char *p;
 
     errno = 0;
 
@@ -126,7 +126,7 @@ int mkdir_p(const char *path) {
     if (len > sizeof(_path)-1) {
         errno = ENAMETOOLONG;
         return -1; 
-    }   
+    }
     strcpy(_path, path);
 
     /* Iterate the string */
@@ -142,12 +142,12 @@ int mkdir_p(const char *path) {
 
             *p = '/';
         }
-    }   
+    }
 
     if (mkdir(_path, S_IRWXU) != 0) {
         if (errno != EEXIST)
             return -1; 
-    }   
+    }
 
     return 0;
 }
@@ -156,21 +156,20 @@ int local_clone_exists(char* plugin_name) {
     char* plugin_path = generate_plugin_path(plugin_name);
     DIR* plugin_directory = opendir(plugin_path);
 
-    if (plugin_directory) {
+    if (plugin_directory != NULL) {
         closedir(plugin_directory);
-    } else if (ENOENT == errno) {
-        int status = mkdir_p(plugin_path);
-        errno = status;
-    }
+        return 0;
 
-    return errno;
+    }
+    /*int status = */mkdir_p(plugin_path);
+    return 1;
 }
 
 int zpm_configuration_exists() {
-    char* zpmrc_path = get_zpmrc_path();
+    char* zpm_init_path = get_zpm_init_path();
 
     FILE *file;
-    if ((file = fopen(zpmrc_path, "r")) == NULL) {
+    if ((file = fopen(zpm_init_path, "r")) == NULL) {
         return -1;
     } else {
         fclose(file);
@@ -234,7 +233,7 @@ int main(int argc, char* argv[]) {
 
     if (strstr(plugin_name_or_command, "reset")) {
         unlink(get_plugin_list_path());
-        unlink(get_zpmrc_path());
+        unlink(get_zpm_init_path());
         return 0;
 
     } else if (strstr(plugin_name_or_command, "update")) {
@@ -257,7 +256,7 @@ int main(int argc, char* argv[]) {
     printf("%s", install);
     fflush(stdout);
 
-    if (local_clone_exists(plugin_name)) {
+    if (local_clone_exists(plugin_name) == 1) {
         status = locally_clone_plugin(plugin_name);
     }
 
