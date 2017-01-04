@@ -60,14 +60,11 @@ char* get_zpm_init_path() {
     return zpm_init;
 }
 
-int generate_plugin_entry(char* plugin_name) {
-    char* zpm_init = malloc(PATH_MAX);
-    zpm_init = get_zpm_init_path();
-    FILE* store = fopen(zpm_init,"ab+");
+char* get_plugin_entry(char* plugin_name) {
+    char* plugin_entry = malloc(PATH_MAX);
 
     char* plugin_path = malloc(PATH_MAX);
     plugin_path = generate_plugin_path(plugin_name);
-    char* plugin_entry = malloc(PATH_MAX);
 
     char* plugin_entry_point = get_plugin_entry_point(plugin_name);
 
@@ -77,13 +74,30 @@ int generate_plugin_entry(char* plugin_name) {
     strcat(plugin_entry, plugin_entry_point);
     strcat(plugin_entry, "\n");
 
+    return plugin_entry;
+}
+
+int generate_plugin_entry(char* plugin_name) {
+    char* zpm_init = malloc(PATH_MAX);
+    zpm_init = get_zpm_init_path();
+    FILE* store = fopen(zpm_init,"ab+");
+
+    char* plugin_entry = get_plugin_entry(plugin_name); 
     char* plugin_entry_list = malloc(PATH_MAX);
     fread(plugin_entry_list, 1, 1024, store);
+    fclose(store);
     if (strstr(plugin_entry_list, plugin_entry)) {
         return 0;
     }
 
-    return fwrite(plugin_entry, strlen(plugin_entry), 1, store);
+    FILE *init = fopen(zpm_init, "r+");
+    fseek(init, -54, SEEK_END);
+    strcat(plugin_entry, "autoload -Uz compinit; compinit -iCd $HOME/.zcompdump\n");
+
+    int status = fwrite(plugin_entry, strlen(plugin_entry), 1, init);
+    fclose(init);
+
+    return status;
 }
 
 char* get_plugin_list_path() {
