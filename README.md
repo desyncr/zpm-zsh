@@ -25,13 +25,15 @@ zpm "zsh-users/zsh-autosuggestions"
 zpm "rupa/z"
 ```
 
+These commands will generate `$HOME/.zpm-init.zsh` file. Use that to load plugins.
+
 #### Configure zsh
 
 Then configure zsh to use them:
 
 ```sh
 # .zshrc
-source ~/.zpmrc
+source $HOME/.zpm-init.zsh
 ```
 
 If you add or remove new plugins you will need to:
