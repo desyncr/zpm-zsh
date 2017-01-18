@@ -302,6 +302,7 @@ int main(int argc, char* argv[]) {
     }
 
     free(plugin_name);
+    free(install);
     return status;
 }
 
