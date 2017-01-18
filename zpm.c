@@ -48,6 +48,8 @@ char* get_plugin_entry_point(char* plugin_name) {
       closedir (dir);
     }
 
+    free(plugin_path);
+
     return plugin_entry_point;
 }
 
@@ -73,6 +75,8 @@ char* get_plugin_entry(char* plugin_name) {
     strcat(plugin_entry, "/");
     strcat(plugin_entry, plugin_entry_point);
     strcat(plugin_entry, "\n");
+
+    free(plugin_path);
 
     return plugin_entry;
 }
@@ -176,6 +180,8 @@ int local_clone_exists(char* plugin_name) {
 
     }
     /*int status = */mkdir_p(plugin_path);
+    free(plugin_path);
+
     return 1;
 }
 
@@ -210,6 +216,8 @@ int locally_clone_plugin(char* plugin_name) {
     strcat(command, " ");
     strcat(command, clone_destination);
     strcat(command, " > /dev/null 2>&1");
+
+    free(clone_destination);
 
     return system(command);
 }
