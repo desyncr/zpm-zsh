@@ -129,11 +129,12 @@ int plugin_list_add_item(char* plugin_name) {
     char* plugin_item_list = malloc(PATH_MAX);
     fread(plugin_item_list, 1, 1024, store);
     if (strstr(plugin_item_list, plugin_item)) {
+        free(plugin_item_list);
         return 0;
     }
 
     free(plugin_list);
-
+    free(plugin_item_list);
     return fwrite(plugin_item, strlen(plugin_item), 1, store);
 }
 
