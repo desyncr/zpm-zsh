@@ -64,8 +64,7 @@ char* get_zpm_init_path() {
 char* get_plugin_entry(char* plugin_name) {
     char* plugin_entry = malloc(PATH_MAX);
 
-    char* plugin_path = malloc(PATH_MAX);
-    plugin_path = generate_plugin_path(plugin_name);
+    char* plugin_path = generate_plugin_path(plugin_name);
 
     char* plugin_entry_point = get_plugin_entry_point(plugin_name);
 
