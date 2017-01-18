@@ -48,8 +48,6 @@ char* get_plugin_entry_point(char* plugin_name) {
       closedir (dir);
     }
 
-    free(plugin_path);
-
     return plugin_entry_point;
 }
 
@@ -76,23 +74,19 @@ char* get_plugin_entry(char* plugin_name) {
     strcat(plugin_entry, plugin_entry_point);
     strcat(plugin_entry, "\n");
 
-    free(plugin_path);
-
     return plugin_entry;
 }
 
 int generate_plugin_entry(char* plugin_name) {
-    char* zpm_init = zpm_init = get_zpm_init_path();
+    char* zpm_init = malloc(PATH_MAX);
+    zpm_init = get_zpm_init_path();
     FILE* store = fopen(zpm_init,"ab+");
 
-    char* plugin_entry = get_plugin_entry(plugin_name);
+    char* plugin_entry = get_plugin_entry(plugin_name); 
     char* plugin_entry_list = malloc(PATH_MAX);
     fread(plugin_entry_list, 1, 1024, store);
     fclose(store);
     if (strstr(plugin_entry_list, plugin_entry)) {
-        free(zpm_init);
-        free(plugin_entry);
-        free(plugin_entry_list);
         return 0;
     }
 
@@ -103,9 +97,6 @@ int generate_plugin_entry(char* plugin_name) {
     int status = fwrite(plugin_entry, strlen(plugin_entry), 1, init);
     fclose(init);
 
-    free(zpm_init);
-    free(plugin_entry);
-    free(plugin_entry_list);
     return status;
 }
 
@@ -132,8 +123,6 @@ int plugin_list_add_item(char* plugin_name) {
     if (strstr(plugin_item_list, plugin_item)) {
         return 0;
     }
-
-    free(plugin_list);
 
     return fwrite(plugin_item, strlen(plugin_item), 1, store);
 }
@@ -183,12 +172,10 @@ int local_clone_exists(char* plugin_name) {
 
     if (plugin_directory != NULL) {
         closedir(plugin_directory);
-        free(plugin_path);
         return 0;
+
     }
     /*int status = */mkdir_p(plugin_path);
-    free(plugin_path);
-
     return 1;
 }
 
@@ -224,14 +211,12 @@ int locally_clone_plugin(char* plugin_name) {
     strcat(command, clone_destination);
     strcat(command, " > /dev/null 2>&1");
 
-    free(clone_destination);
-
     return system(command);
 }
 
 char* get_zpm_plugin_list() {
     char* plugin_list_path = get_plugin_list_path();
-    char* listing = malloc(1024);
+    char  listing = malloc(1024);
     FILE* list;
 
     list = fopen(plugin_list_path, "rb");
@@ -241,15 +226,27 @@ char* get_zpm_plugin_list() {
     } else {
         strcpy(listing, "Nothing to show.");
     }
-
-    free(plugin_list_path);
-
+    free(plugin_list_path); // HACK
     return listing;
 }
 
 int plugins_update_local_clone() {
-    // iterate over plugins_list
-    // exec git pull --git-dir=
+    char* listing = get_zpm_plugin_list();
+    char* plugin_name = NULL;
+
+    plugin_name = strtok(listing, "\n");
+    while(plugin_name) {
+        char command[PATH_MAX];
+        strcpy(command, "cd ~/.zpm/plugins/");
+        strcat(command, plugin_name);
+        strcat(command, "; git pull");
+        strcat(command, " > /dev/null 2>&1");
+        // the return value should be checked
+        if(system(command))
+          return 1;
+    plugin_name = strtok(NULL, "\n");
+  }
+  free(listing);
     return 0;
 }
 
@@ -260,29 +257,27 @@ int main(int argc, char* argv[]) {
     }
 
     char* plugin_name_or_command = argv[1];
-    char* plugin_name = NULL;
+    char* plugin_name = malloc(PATH_MAX);
 
     if (strstr(plugin_name_or_command, "reset")) {
-        char* plugin_list = get_plugin_list_path();
-        char* zpm_init = get_zpm_init_path();
-        unlink(plugin_list);
-        unlink(zpm_init);
-        free(plugin_list);
-        free(zpm_init);
-        return 0;
+        unlink(get_plugin_list_path());
+        unlink(get_zpm_init_path());
+goto clean;
+//        return 0;
 
     } else if (strstr(plugin_name_or_command, "update")) {
         plugins_update_local_clone();
-        return 0;
+goto clean;
+//        return 0;
 
     } else if (strstr(plugin_name_or_command, "list")) {
-        char* plugin_list = get_zpm_plugin_list();
-        printf("%s\n", plugin_list);
-        free(plugin_list);
-        return 0;
+          char* plugin_list = get_zpm_plugin_list();
+          printf("%s\n", plugin_list);
+          free(plugin_list);
+goto clean;
+//        return 0;
 
     } else {
-        plugin_name = malloc(PATH_MAX);
         strcpy(plugin_name, plugin_name_or_command);
     }
 
@@ -305,9 +300,8 @@ int main(int argc, char* argv[]) {
     } else {
         printf("%s\n", "Error!");
     }
-
+clean:
     free(plugin_name);
-    free(install);
     return status;
 }
 
