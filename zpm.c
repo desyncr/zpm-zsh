@@ -178,8 +178,8 @@ int local_clone_exists(char* plugin_name) {
 
     if (plugin_directory != NULL) {
         closedir(plugin_directory);
+        free(plugin_path);
         return 0;
-
     }
     /*int status = */mkdir_p(plugin_path);
     free(plugin_path);
