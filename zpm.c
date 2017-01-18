@@ -255,9 +255,25 @@ char* get_zpm_plugin_list() {
 }
 
 int plugins_update_local_clone() {
+    int ret;
+    char* command = malloc(PATH_MAX);
+    char* listing = get_zpm_plugin_list();
+    char* plugin_name = strtok(listing, "\n");
+
+strcpy(command, "echo lol ");
+
     // iterate over plugins_list
-    // exec git pull --git-dir=
-    return 0;
+    while(plugin_name) {
+      // exec git pull --git-dir=
+      strcpy(command, "cd ~/.zpm/plugins/");
+      strcat(command, plugin_name);
+      strcat(command, "; git pull");
+      plugin_name = strtok(NULL, "\n");
+    }
+    ret = system(command);
+    free(command);
+    free(listing);
+    return ret;
 }
 
 int main(int argc, char* argv[]) {
