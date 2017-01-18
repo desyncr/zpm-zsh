@@ -82,7 +82,7 @@ char* get_plugin_entry(char* plugin_name) {
 }
 
 int generate_plugin_entry(char* plugin_name) {
-    char* zpm_init = zpm_init = get_zpm_init_path();
+    char* zpm_init = get_zpm_init_path();
     FILE* store = fopen(zpm_init,"ab+");
 
     char* plugin_entry = get_plugin_entry(plugin_name);
