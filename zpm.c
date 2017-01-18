@@ -49,7 +49,6 @@ char* get_plugin_entry_point(char* plugin_name) {
     }
 
     free(plugin_path);
-
     return plugin_entry_point;
 }
 
@@ -77,7 +76,7 @@ char* get_plugin_entry(char* plugin_name) {
     strcat(plugin_entry, "\n");
 
     free(plugin_path);
-
+    free(plugin_entry_point);
     return plugin_entry;
 }
 
