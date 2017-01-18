@@ -255,7 +255,7 @@ int main(int argc, char* argv[]) {
     }
 
     char* plugin_name_or_command = argv[1];
-    char* plugin_name = malloc(PATH_MAX);
+    char* plugin_name = NULL;
 
     if (strstr(plugin_name_or_command, "reset")) {
         char* plugin_list = get_plugin_list_path();
@@ -277,6 +277,7 @@ int main(int argc, char* argv[]) {
         return 0;
 
     } else {
+        plugin_name = malloc(PATH_MAX);
         strcpy(plugin_name, plugin_name_or_command);
     }
 
@@ -300,6 +301,7 @@ int main(int argc, char* argv[]) {
         printf("%s\n", "Error!");
     }
 
+    free(plugin_name);
     return status;
 }
 
