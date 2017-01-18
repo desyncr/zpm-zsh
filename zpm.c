@@ -128,6 +128,8 @@ int plugin_list_add_item(char* plugin_name) {
         return 0;
     }
 
+    free(plugin_list);
+
     return fwrite(plugin_item, strlen(plugin_item), 1, store);
 }
 
@@ -235,6 +237,8 @@ char* get_zpm_plugin_list() {
         strcpy(listing, "Nothing to show.");
     }
 
+    free(plugin_list_path);
+
     return listing;
 }
 
@@ -263,7 +267,9 @@ int main(int argc, char* argv[]) {
         return 0;
 
     } else if (strstr(plugin_name_or_command, "list")) {
-        printf("%s\n", get_zpm_plugin_list());
+        char* plugin_list = get_zpm_plugin_list();
+        printf("%s\n", plugin_list);
+        free(plugin_list);
         return 0;
 
     } else {
