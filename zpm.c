@@ -117,6 +117,7 @@ char* get_plugin_list_path() {
 }
 
 int plugin_list_add_item(char* plugin_name) {
+    int ret;
     char* plugin_item = malloc(PATH_MAX);
     strcpy(plugin_item, plugin_name);
     strcat(plugin_item, "\n");
@@ -133,10 +134,11 @@ int plugin_list_add_item(char* plugin_name) {
         return 0;
     }
 
+    ret = fwrite(plugin_item, strlen(plugin_item), 1, store);
     free(plugin_item);
     free(plugin_list);
     free(plugin_item_list);
-    return fwrite(plugin_item, strlen(plugin_item), 1, store);
+    return ret;
 }
 
 /* https://gist.github.com/JonathonReinhart/8c0d90191c38af2dcadb102c4e202950 */
@@ -215,6 +217,7 @@ char* generate_repository_url(char* plugin_name) {
 }
 
 int locally_clone_plugin(char* plugin_name) {
+    int ret;
     char* repository_url = generate_repository_url(plugin_name);
     char* clone_destination = generate_plugin_path(plugin_name);
 
@@ -225,9 +228,12 @@ int locally_clone_plugin(char* plugin_name) {
     strcat(command, clone_destination);
     strcat(command, " > /dev/null 2>&1");
 
+    free(repository_url);
     free(clone_destination);
 
-    return system(command);
+    ret = system(command);
+    free(command);
+    return ret;
 }
 
 char* get_zpm_plugin_list() {
