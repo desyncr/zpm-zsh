@@ -122,8 +122,7 @@ int plugin_list_add_item(char* plugin_name) {
     strcpy(plugin_item, plugin_name);
     strcat(plugin_item, "\n");
 
-    char* plugin_list = malloc(PATH_MAX);
-    plugin_list = get_plugin_list_path();
+    char* plugin_list = get_plugin_list_path();
     FILE* store = fopen(plugin_list,"ab+");
 
     char* plugin_item_list = malloc(PATH_MAX);
