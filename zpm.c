@@ -258,8 +258,12 @@ int main(int argc, char* argv[]) {
     char* plugin_name = malloc(PATH_MAX);
 
     if (strstr(plugin_name_or_command, "reset")) {
-        unlink(get_plugin_list_path());
-        unlink(get_zpm_init_path());
+        char* plugin_list = get_plugin_list_path();
+        char* zpm_init = get_zpm_init_path();
+        unlink(plugin_list);
+        unlink(zpm_init);
+        free(plugin_list);
+        free(zpm_init);
         return 0;
 
     } else if (strstr(plugin_name_or_command, "update")) {
