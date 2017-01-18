@@ -82,8 +82,7 @@ char* get_plugin_entry(char* plugin_name) {
 }
 
 int generate_plugin_entry(char* plugin_name) {
-    char* zpm_init = malloc(PATH_MAX);
-    zpm_init = get_zpm_init_path();
+    char* zpm_init = zpm_init = get_zpm_init_path();
     FILE* store = fopen(zpm_init,"ab+");
 
     char* plugin_entry = get_plugin_entry(plugin_name); 
@@ -91,6 +90,7 @@ int generate_plugin_entry(char* plugin_name) {
     fread(plugin_entry_list, 1, 1024, store);
     fclose(store);
     if (strstr(plugin_entry_list, plugin_entry)) {
+        free(zpm_init);
         return 0;
     }
 
@@ -101,6 +101,7 @@ int generate_plugin_entry(char* plugin_name) {
     int status = fwrite(plugin_entry, strlen(plugin_entry), 1, init);
     fclose(init);
 
+    free(zpm_init);
     return status;
 }
 
