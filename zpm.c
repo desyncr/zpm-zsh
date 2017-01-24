@@ -266,6 +266,7 @@ int plugins_update_local_clone() {
       strcat(command, "; git pull");
       plugin_name = strtok(NULL, "\n");
     }
+    printf("Update plugins ...\n");
     ret = system(command);
     free(command);
     free(listing);
