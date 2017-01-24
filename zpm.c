@@ -260,11 +260,7 @@ int plugins_update_local_clone() {
     char* listing = get_zpm_plugin_list();
     char* plugin_name = strtok(listing, "\n");
 
-strcpy(command, "echo lol ");
-
-    // iterate over plugins_list
     while(plugin_name) {
-      // exec git pull --git-dir=
       strcpy(command, "cd ~/.zpm/plugins/");
       strcat(command, plugin_name);
       strcat(command, "; git pull");
