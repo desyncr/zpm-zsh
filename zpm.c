@@ -264,10 +264,10 @@ int plugins_update_local_clone() {
       strcpy(command, "cd ~/.zpm/plugins/");
       strcat(command, plugin_name);
       strcat(command, "; git pull");
+      ret = system(command);
       plugin_name = strtok(NULL, "\n");
     }
     printf("Update plugins ...\n");
-    ret = system(command);
     free(command);
     free(listing);
     return ret;
