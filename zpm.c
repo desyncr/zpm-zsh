@@ -260,6 +260,10 @@ int plugins_update_local_clone() {
     char* listing = get_zpm_plugin_list();
     char* plugin_name = strtok(listing, "\n");
 
+    if(!strcmp(listing, "Nothing to show.")) {
+      printf("Nothing to update.");
+      return -1;
+    }
     printf("Updating plugins ...\n");
     while(plugin_name) {
       strcpy(command, "cd ~/.zpm/plugins/");
