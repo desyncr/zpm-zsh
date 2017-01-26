@@ -48,6 +48,12 @@ To see a list of installed plugins:
 zpm list
 
 ```
+To update installed plugins:
+
+```sh
+zpm update
+
+```
 
 ## Development
 
@@ -61,7 +67,7 @@ You'll need zcram (or cram) installed and available in `PATH`.
 
 ## TODO
 
-  - [ ] Update command
+  - [X] Update command
   - [ ] List command show version (hash)
   - [ ] Support for local plugins
   - [ ] Add plugins to fpath
