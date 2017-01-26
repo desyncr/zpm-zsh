@@ -210,7 +210,13 @@ int zpm_configuration_exists() {
 
 char* generate_repository_url(char* plugin_name) {
     char* url = malloc(PATH_MAX);
-    strcpy(url, "https://github.com/");
+    char* tmp = strstr(plugin_name, "/");
+
+    tmp = strstr(tmp + 1, "/");
+    if(!tmp)
+        strcpy(url, "https://github.com/");
+    else
+        strcpy(url, "https://");
     strcat(url, plugin_name);
 
     return url;
