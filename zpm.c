@@ -213,10 +213,11 @@ char* generate_repository_url(char* plugin_name) {
     char* tmp = strstr(plugin_name, "/");
 
     tmp = strstr(tmp + 1, "/");
-    if(!tmp)
+    if (!tmp) {
         strcpy(url, "https://github.com/");
-    else
+    } else {
         strcpy(url, "https://");
+    }
     strcat(url, plugin_name);
 
     return url;
