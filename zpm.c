@@ -236,9 +236,15 @@ int plugins_update_local_clone() {
     return 0;
 }
 
+void usage() {
+    printf("%s\n", "Usage:\n\tzpm 'zsh-users/zsh-syntax-highlighting'");
+    printf("%s\n", "\nAvailable commands:\n\tzpm reset\n\tzpm list");
+    printf("%s\n", "\tzpm update\n\tzpm help");
+}
+
 int main(int argc, char* argv[]) {
     if (argc <= 1) {
-        printf("%s\n", "Usage:\n\tzpm 'zsh-users/zsh-syntax-highlighting'");
+		usage();
         return 1;
     }
 
@@ -256,6 +262,10 @@ int main(int argc, char* argv[]) {
 
     } else if (strstr(plugin_name_or_command, "list")) {
         printf("%s\n", get_zpm_plugin_list());
+        return 0;
+
+    } else if (strstr(plugin_name_or_command, "help")) {
+        usage();
         return 0;
 
     } else {
