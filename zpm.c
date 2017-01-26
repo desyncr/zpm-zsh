@@ -269,6 +269,7 @@ int plugins_update_local_clone() {
       strcpy(command, "cd ~/.zpm/plugins/");
       strcat(command, plugin_name);
       strcat(command, "; git pull");
+      printf("Updating %s...\n", plugin_name);
       ret = system(command);
       plugin_name = strtok(NULL, "\n");
     }
