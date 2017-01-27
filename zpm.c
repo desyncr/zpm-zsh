@@ -194,13 +194,10 @@ int mkdir_p(const char *path) {
 }
 
 int local_clone_exists(char* plugin_name) {
-<<<<<<< HEAD
     if (plugin_name[0] == '/') {
         return 0;
     }
-    if (plugin_name[0] == '/') {
-        return 0;
-    }
+
     char* plugin_path = generate_plugin_path(plugin_name);
     DIR* plugin_directory = opendir(plugin_path);
 
