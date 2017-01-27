@@ -131,6 +131,8 @@ int plugin_list_add_item(char* plugin_name) {
     FILE* store = fopen(plugin_list,"ab+");
 
     if (!store) {
+        free(plugin_item);
+        free(plugin_list);
         return -1;
     }
 
@@ -164,7 +166,7 @@ int mkdir_p(const char *path) {
     /* Copy string so its mutable */
     if (len > sizeof(_path)-1) {
         errno = ENAMETOOLONG;
-        return -1; 
+        return -1;
     }
     strcpy(_path, path);
 
@@ -176,7 +178,7 @@ int mkdir_p(const char *path) {
 
             if (mkdir(_path, S_IRWXU) != 0) {
                 if (errno != EEXIST)
-                    return -1; 
+                    return -1;
             }
 
             *p = '/';
@@ -185,7 +187,7 @@ int mkdir_p(const char *path) {
 
     if (mkdir(_path, S_IRWXU) != 0) {
         if (errno != EEXIST)
-            return -1; 
+            return -1;
     }
 
     return 0;
@@ -279,15 +281,15 @@ int plugins_update_local_clone() {
     }
     printf("Updating plugins ...\n");
     while(plugin_name) {
-      if (plugin_name[0] == '/')
-          goto next;
-      strcpy(command, "cd ~/.zpm/plugins/");
-      strcat(command, plugin_name);
-      strcat(command, "; git pull");
-      printf("Updating %s...\n", plugin_name);
-      ret = system(command);
+        if (plugin_name[0] == '/')
+            goto next;
+        strcpy(command, "cd ~/.zpm/plugins/");
+        strcat(command, plugin_name);
+        strcat(command, "; git pull");
+        printf("Updating %s...\n", plugin_name);
+        ret = system(command);
 next:
-      plugin_name = strtok(NULL, "\n");
+        plugin_name = strtok(NULL, "\n");
     }
     free(command);
     free(listing);
