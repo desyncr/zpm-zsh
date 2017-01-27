@@ -194,8 +194,9 @@ int mkdir_p(const char *path) {
 }
 
 int local_clone_exists(char* plugin_name) {
-    if (plugin_name[0] == '/')
+    if (plugin_name[0] == '/') {
         return 0;
+    }
     char* plugin_path = generate_plugin_path(plugin_name);
     DIR* plugin_directory = opendir(plugin_path);
 
@@ -281,14 +282,15 @@ int plugins_update_local_clone() {
     }
     printf("Updating plugins ...\n");
     while(plugin_name) {
-        if (plugin_name[0] == '/')
-            goto next;
+        if (plugin_name[0] == '/') {
+            plugin_name = strtok(NULL, "\n");
+            continue;
+        }
         strcpy(command, "cd ~/.zpm/plugins/");
         strcat(command, plugin_name);
         strcat(command, "; git pull");
         printf("Updating %s...\n", plugin_name);
         ret = system(command);
-next:
         plugin_name = strtok(NULL, "\n");
     }
     free(command);
