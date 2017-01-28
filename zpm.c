@@ -100,10 +100,18 @@ int generate_plugin_entry(char* plugin_name) {
         free(plugin_entry_list);
         return 0;
     }
-
     FILE *init = fopen(zpm_init, "r+");
     fseek(init, -54, SEEK_END);
-    strcat(plugin_entry, "autoload -Uz compinit; compinit -iCd $HOME/.zcompdump\n");
+    strcat(plugin_entry, "fpath+=");
+    if(plugin_name[0] == '/') {
+        strcat(plugin_entry, plugin_name);
+    } else {
+        char* plugin_path = generate_plugin_path(plugin_name);
+        strcat(plugin_entry, plugin_path);
+        strcat(plugin_entry, "/");
+        free(plugin_path);
+    }
+    strcat(plugin_entry, "\nautoload -Uz compinit; compinit -iCd $HOME/.zcompdump\n");
 
     int status = fwrite(plugin_entry, strlen(plugin_entry), 1, init);
     fclose(init);
