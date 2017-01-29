@@ -312,7 +312,7 @@ int plugins_update_local_clone() {
       return -1;
     }
     printf("Updating plugins ...\n");
-    while(plugin_name) {
+    while (plugin_name) {
         if (plugin_name[0] == '/') {
             plugin_name = strtok(NULL, "\n");
             continue;
@@ -333,6 +333,57 @@ void usage() {
     printf("%s\n", "Usage:\n\tzpm 'zsh-users/zsh-syntax-highlighting'");
     printf("%s\n", "\nAvailable commands:\n\tzpm reset\n\tzpm list");
     printf("%s\n", "\tzpm update\n\tzpm help");
+}
+
+char* plugin_get_hash(char* plugin_name) {
+    FILE *fp;
+    struct stat s;
+    char* plugin_path = generate_plugin_path(plugin_name);
+    char plugin_hash[PATH_MAX];
+    char command[PATH_MAX];
+
+    strcat(plugin_path, "/.git");
+    if (stat(plugin_path, &s) == -1 || !S_ISDIR(s.st_mode)) {
+        free(plugin_path);
+        return NULL;
+    }
+    memset(command, 0, PATH_MAX);
+    strcat(command, "git --git-dir=");
+    strcat(command, plugin_path);
+    strcat(command, " rev-parse --short HEAD");
+    fp = popen(command, "r");
+    if (!fp) {
+        free(plugin_path);
+        printf("Failed to run command\n" );
+        return NULL;
+    }
+    fgets(plugin_hash, sizeof(plugin_hash), fp);
+    pclose(fp);
+    free(plugin_path);
+    return strdup(plugin_hash);
+}
+
+int plugin_print_list() {
+    char* listing = get_zpm_plugin_list();
+    char* plugin_name = strtok(listing, "\n");
+
+    if (!strcmp(listing, "Nothing to show.")) {
+        printf("%s\n", listing);
+        return -1;
+    }
+    while (plugin_name) {
+       char* hash = plugin_get_hash(plugin_name);
+       printf("%s", plugin_name);
+       if (hash) {
+           printf(" %s", hash);
+           free(hash);
+       } else {
+          printf("\n");
+       }
+       plugin_name = strtok(NULL, "\n");
+    }
+    free(listing);
+    return 0;
 }
 
 int main(int argc, char* argv[]) {
@@ -358,11 +409,7 @@ int main(int argc, char* argv[]) {
         return 0;
 
     } else if (strstr(plugin_name_or_command, "list")) {
-        char* plugin_list = get_zpm_plugin_list();
-        printf("%s\n", plugin_list);
-        free(plugin_list);
-        return 0;
-
+        return plugin_print_list();
     } else if (strstr(plugin_name_or_command, "help")) {
         usage();
         return 0;
