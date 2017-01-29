@@ -344,6 +344,11 @@ int main(int argc, char* argv[]) {
     char* plugin_name_or_command = argv[1];
     char* plugin_name = NULL;
 
+    char zpm_conf[PATH_MAX];
+    strcpy(zpm_conf, getenv("HOME");
+    strcat(zpm_conf, "/.zpm");
+    mkdir(zpm_conf, S_IRWXU);
+
     if (strstr(plugin_name_or_command, "reset")) {
         char* plugin_list = get_plugin_list_path();
         char* zpm_init = get_zpm_init_path();
