@@ -354,7 +354,7 @@ int main(int argc, char* argv[]) {
     char* plugin_name = NULL;
 
     char zpm_conf[PATH_MAX];
-    strcpy(zpm_conf, getenv("HOME");
+    strcpy(zpm_conf, getenv("HOME"));
     strcat(zpm_conf, "/.zpm");
     mkdir(zpm_conf, S_IRWXU);
 
