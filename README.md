@@ -71,6 +71,6 @@ You'll need zcram (or cram) installed and available in `PATH`.
   - [X] Add plugins to fpath
   - [X] Support for local plugins
   - [X] List command show version (hash)
-  - [ ] Add executables to PATH
+  - [X] Add executables to PATH
   
 
