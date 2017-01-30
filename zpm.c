@@ -217,6 +217,100 @@ int mkdir_p(const char *path) {
     return 0;
 }
 
+int rmdir_r(const char *path) {
+   DIR *d = opendir(path);
+   size_t path_len = strlen(path);
+   int r = -1;
+
+   if (d) {
+      struct dirent *p;
+
+      r = 0;
+
+      while (!r && (p=readdir(d))) {
+          int r2 = -1;
+          char *buf;
+          size_t len;
+
+          if (!strcmp(p->d_name, ".") || !strcmp(p->d_name, "..")) {
+             continue;
+          }
+
+          len = path_len + strlen(p->d_name) + 2;
+          buf = malloc(len);
+
+          if (buf) {
+             struct stat statbuf;
+
+             snprintf(buf, len, "%s/%s", path, p->d_name);
+
+             if (!stat(buf, &statbuf)) {
+                if (S_ISDIR(statbuf.st_mode)) {
+                   r2 = rmdir_r(buf);
+                } else {
+                   r2 = unlink(buf);
+                }
+             }
+             free(buf);
+          }
+          r = r2;
+      }
+      closedir(d);
+   }
+   if (!r) {
+      r = rmdir(path);
+   }
+
+   return r;
+}
+
+int plugin_remove_entry(char* plugin_name, char* file_name) {
+    FILE* store = fopen(file_name, "r");
+    if (!store) {
+        printf("no config file\n");
+        return 1;
+    }
+    FILE* tmp = fopen("/tmp/.zpm_tmp", "w");
+    char entry[PATH_MAX];
+
+    while (fgets(entry, PATH_MAX, store)) {
+        if (!strstr(entry, plugin_name)) {
+            fwrite(entry, strlen(entry), 1, tmp);
+        }
+    }
+
+    fclose(store);
+    fclose(tmp);
+
+    tmp =fopen("/tmp/.zpm_tmp", "r");
+    store =fopen(file_name, "w");
+    while (fgets(entry, PATH_MAX, tmp)) {
+        fwrite(entry, strlen(entry), 1, store);
+    }
+    fclose(store);
+    fclose(tmp);
+    free(file_name);
+    return 0;
+}
+
+int plugin_remove(char* plugin_name, int uninstall) {
+    if (!plugin_name) {
+        printf("remove needs an argument.\n");
+        return 1;
+    }
+    plugin_remove_entry(plugin_name, get_zpm_init_path());
+    plugin_remove_entry(plugin_name, get_plugin_list_path());
+    if (uninstall && plugin_name[0] != '/') {
+      char plugin_path[PATH_MAX];
+
+      strcpy(plugin_path, getenv("HOME"));
+      strcat(plugin_path, "/.zpm/plugins/");
+      strcat(plugin_path, plugin_name);
+      rmdir_r(plugin_name);
+    }
+    return 0;
+}
+
 int local_clone_exists(char* plugin_name) {
     if (plugin_name[0] == '/') {
         return 0;
@@ -259,7 +353,8 @@ char* generate_repository_url(char* plugin_name) {
     char* tmp = strstr(plugin_name, "/");
 
     if (!tmp) {
-      return NULL;
+        free(url);
+        return NULL;
     }
     tmp = strstr(tmp + 1, "/");
     if (!tmp) {
@@ -446,13 +541,16 @@ int main(int argc, char* argv[]) {
     } else if (strstr(plugin_name_or_command, "help")) {
         usage();
         return 0;
-
+    } else if (strstr(plugin_name_or_command, "remove")) {
+        return plugin_remove(argv[2], 0);;
+    } else if (strstr(plugin_name_or_command, "uninstall")) {
+        return plugin_remove(argv[2], 1);;
     } else {
         plugin_name = malloc(PATH_MAX);
         strcpy(plugin_name, plugin_name_or_command);
     }
 
-    int status = strstr(plugin_name, "/") ? 0 : -1;
+    int status = strstr(plugin_name, "/") ? 0 : 1;
     char* install = malloc(1024);
     strcpy(install, "Installing ");
     strcat(install, plugin_name);
