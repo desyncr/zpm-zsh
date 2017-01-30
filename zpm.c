@@ -399,6 +399,20 @@ int plugin_print_list() {
     return 0;
 }
 
+int plugin_print_script() {
+    char entry[PATH_MAX];
+    char* zpm_init = get_plugin_list_path();
+    FILE* store = fopen(zpm_init, "r");
+
+    memset(entry, 9, PATH_MAX);
+    while( fgets(entry, PATH_MAX, store)) {
+        printf("zpm %s", entry);
+    }
+    free(zpm_init);
+    fclose(store);
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     if (argc <= 1) {
         usage();
@@ -426,6 +440,8 @@ int main(int argc, char* argv[]) {
         return plugins_update_local_clone();
     } else if (strstr(plugin_name_or_command, "list")) {
         return plugin_print_list();
+    } else if (strstr(plugin_name_or_command, "save")) {
+        return plugin_print_script();
     } else if (strstr(plugin_name_or_command, "help")) {
         usage();
         return 0;
