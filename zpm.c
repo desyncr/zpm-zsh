@@ -423,9 +423,7 @@ int main(int argc, char* argv[]) {
         return 0;
 
     } else if (strstr(plugin_name_or_command, "update")) {
-        plugins_update_local_clone();
-        return 0;
-
+        return plugins_update_local_clone();
     } else if (strstr(plugin_name_or_command, "list")) {
         return plugin_print_list();
     } else if (strstr(plugin_name_or_command, "help")) {
