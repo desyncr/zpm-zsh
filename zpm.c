@@ -144,7 +144,11 @@ int plugin_list_add_item(char* plugin_name) {
     int ret;
     char* plugin_item = malloc(PATH_MAX);
 
-    strcpy(plugin_item, plugin_name);
+    if (!strncmp(plugin_name, "github.com", 11)) {
+        strcpy(plugin_item, plugin_name + 11);
+    } else {
+        strcpy(plugin_item, plugin_name);
+    }
     strcat(plugin_item, "\n");
 
     char* plugin_list = get_plugin_list_path();
