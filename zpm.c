@@ -508,7 +508,9 @@ int plugin_print_script() {
     printf("#!/bin/sh\n");
     memset(entry, 9, PATH_MAX);
     while( fgets(entry, PATH_MAX, store)) {
-        printf("zpm \"%s\"", entry);
+        char plugin[PATH_MAX];
+		strncpy(plugin, entry, strlen(entry) -1);
+        printf("zpm \"%s\"\n", plugin);
     }
     free(zpm_init);
     fclose(store);
