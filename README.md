@@ -58,14 +58,14 @@ zpm update
 To remove plugin:
 
 ```sh
-zpm remove user/plugin
-zpm remove /path/to/local/plugin
+zpm remove "user/plugin"
+zpm remove "/path/to/local/plugin"
 ```
 
 To uninstall plugin:
 
 ```sh
-zpm uninstall user/plugin
+zpm uninstall "user/plugin"
 zpm uninstall /path/to/local/plugin
 ```
 
