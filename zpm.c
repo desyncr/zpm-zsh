@@ -505,7 +505,6 @@ int plugin_print_script() {
     char* zpm_init = get_plugin_list_path();
     FILE* store = fopen(zpm_init, "r");
 
-    printf("#!/bin/sh\n");
     memset(entry, 9, PATH_MAX);
     while( fgets(entry, PATH_MAX, store)) {
         char plugin[PATH_MAX];
