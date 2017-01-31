@@ -261,6 +261,10 @@ int rmdir_r(const char *path) {
         r = rmdir(path);
     }
 
+    char c[PATH_MAX];
+    char* base = strrchr(path, '/');
+    strncpy(c, path, strlen(path) - strlen(base));
+    rmdir(c);
     return r;
 }
 
