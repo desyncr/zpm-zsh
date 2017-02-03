@@ -8,7 +8,7 @@ before_script:
   - sudo apt-get install zsh
 
 install:
-  - sudo pip install cram
+  - sudo -H pip install cram
 
 script:
   - sudo make install
