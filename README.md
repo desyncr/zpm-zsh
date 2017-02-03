@@ -1,4 +1,4 @@
-# zpm - Zsh Plugin Manager
+# zpm - Zsh Plugin Manager [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/zpm-project/Lobby)
 
 zsh plugin manager in ansi C.
 
