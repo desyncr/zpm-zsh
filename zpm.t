@@ -12,6 +12,7 @@ Command without arguments gives an error if there are no plugins.
   \tzpm list (esc)
   \tzpm update (esc)
   \tzpm help (esc)
+  \tzpm save (esc)
   [1]
 
 Command `list` without any plugin registered show a message.
