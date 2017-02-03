@@ -5,7 +5,9 @@ Command without arguments gives an error if there are no plugins.
   $ zpm reset
   $ zpm
   Usage:
-  \tzpm 'zsh-users/zsh-syntax-highlighting' (esc)
+  \tzpm "zsh-users/zsh-syntax-highlighting" (esc)
+  \tzpm disable "zsh-users/zsh-syntax-highlighting" (esc)
+  \tzpm remove "zsh-users/zsh-syntax-highlighting" (esc)
   
   Available commands:
   \tzpm reset (esc)
@@ -20,7 +22,7 @@ Command `list` without any plugin registered show a message.
   $ zpm reset
   $ zpm list
   Nothing to show.
-  [255]
+  [1]
 
 Can create a new list.
 
@@ -85,6 +87,66 @@ Avoid installing plugin twice
   $ zpm "zsh-users/zsh-syntax-highlighting"
   Plugin "zsh-users/zsh-syntax-highlighting" already installed.
   [1]
+
+Can't remove non-installed plugin
+  $ zpm reset
+  $ zpm remove non_installed_plugin
+  Plugin "non_installed_plugin" is not installed.
+  [1]
+
+After being disabled, plugin is not listed anymore
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm disable "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm list
+  Nothing to show.
+  [1]
+
+After being removed, plugin is not listed anymore
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm list
+  Nothing to show.
+  [1]
+
+Plugin directory is properly unlinked after remove
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ ls ~/.zpm/plugins/zsh-users/zsh-syntax-highlighting
+  ls: cannot access .*/.zpm/plugins/zsh-users/zsh-syntax-highlighting: No such file or directory (re)
+  [2]
+
+Parent directory is properly removed if necessary
+  $ zpm "zsh-users/zsh-autosuggestions"         > /dev/null
+  $ zpm remove "zsh-users/zsh-autosuggestions"  > /dev/null
+  $ ls ~/.zpm/plugins/zsh-users
+  ls: cannot access (.*).*/.zpm/plugins/zsh-users: No such file or directory (re)
+  [2]
+
+Plugin directory is not removed after disable
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm disable "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ ls ~/.zpm/plugins/zsh-users
+  zsh-syntax-highlighting
+
+Plugin can be properly enabled/installed after "disable"
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm disable "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm list
+  zsh-users/zsh-syntax-highlighting .* (re)
+
+Plugin parent directory is not removed if not empty
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm "zsh-users/zsh-autosuggestions"     > /dev/null
+  $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ ls ~/.zpm/plugins/zsh-users/
+  zsh-autosuggestions
 
 Remove spurius files.
 
