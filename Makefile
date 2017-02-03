@@ -1,13 +1,15 @@
+PREFIX ?= /usr/local
+
 make:
 	gcc -Wall -o zpm -g zpm.c
 
 test: make
-	zcram ./zpm.t
+	cram ./zpm.t
 	
 install: make
-	cp zpm /usr/local/bin/zpm
-	chmod u+x /usr/local/bin/zpm
+	cp zpm ${PREFIX}/bin/zpm
+	chmod u+x ${PREFIX}/bin/zpm
 
 uninstall:
-	rm /usr/local/bin/zpm
+	rm ${PREFIX}/bin/zpm
 
