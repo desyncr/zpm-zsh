@@ -1,4 +1,4 @@
-# zpm - Zsh Plugin Manager
+# zpm - Zsh Plugin Manager [![Gitter](https://badges.gitter.im/Join Chat.svg)](https://gitter.im/zpm-project/Lobby) [![Build Status](https://travis-ci.org/zpm-project/zpm-zsh.svg)](https://travis-ci.org/zpm-project/zpm-zsh)
 
 zsh plugin manager in ansi C.
 
@@ -64,6 +64,10 @@ make test
 ```
 
 You'll need zcram (or cram) installed and available in `PATH`.
+
+## Maintainers
+
+`zpm` is currently being actively developed by @desyncr and @fennecdjay.
 
 ## TODO
 

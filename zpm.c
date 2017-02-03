@@ -254,6 +254,28 @@ int zpm_configuration_exists() {
     return 0;
 }
 
+int plugin_entry_exists(char* plugin_name) {
+    int ret = 0;
+    char* list = get_plugin_list_path();
+
+    FILE *file = fopen(list, "r");
+    if (!file) {
+        return 0;
+    }
+
+    char entry[PATH_MAX];
+    while (fgets(entry, PATH_MAX, file)) {
+        if(!strncmp(entry, plugin_name, strlen(plugin_name))) {
+            ret = 1;
+            break;
+        }
+    }
+
+    fclose(file);
+    free(list);
+    return ret;
+}
+
 char* generate_repository_url(char* plugin_name) {
     char* url = malloc(PATH_MAX);
     char* tmp = strstr(plugin_name, "/");
@@ -345,7 +367,7 @@ int plugins_update_local_clone() {
 void usage() {
     printf("%s\n", "Usage:\n\tzpm 'zsh-users/zsh-syntax-highlighting'");
     printf("%s\n", "\nAvailable commands:\n\tzpm reset\n\tzpm list");
-    printf("%s\n", "\tzpm update\n\tzpm help");
+    printf("%s\n", "\tzpm update\n\tzpm help\n\tzpm save");
 }
 
 char* plugin_get_hash(char* plugin_name) {
@@ -399,6 +421,27 @@ int plugin_print_list() {
     return 0;
 }
 
+int plugin_print_script() {
+    char entry[PATH_MAX];
+    char* zpm_init = get_plugin_list_path();
+    FILE* store = fopen(zpm_init, "r");
+
+    if (!store) {
+        printf("Could not open \"%s\". Check the file exists and can be read.\n", zpm_init);
+        return 1;
+    }
+
+    memset(entry, 0, PATH_MAX);
+    while (fgets(entry, PATH_MAX, store)) {
+        char plugin[PATH_MAX];
+        strncpy(plugin, entry, strlen(entry) -1);
+        printf("zpm \"%s\"\n", plugin);
+    }
+    free(zpm_init);
+    fclose(store);
+    return 0;
+}
+
 int main(int argc, char* argv[]) {
     if (argc <= 1) {
         usage();
@@ -428,11 +471,17 @@ int main(int argc, char* argv[]) {
 
     } else if (strstr(plugin_name_or_command, "list")) {
         return plugin_print_list();
+    } else if (strstr(plugin_name_or_command, "save")) {
+        return plugin_print_script();
     } else if (strstr(plugin_name_or_command, "help")) {
         usage();
         return 0;
 
     } else {
+        if (plugin_entry_exists(plugin_name_or_command)) {
+            printf("plugin \"%s\" already installed.\n", plugin_name_or_command);
+            return 1;
+        }
         plugin_name = malloc(PATH_MAX);
         strcpy(plugin_name, plugin_name_or_command);
     }
