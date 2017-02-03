@@ -479,7 +479,7 @@ int main(int argc, char* argv[]) {
 
     } else {
         if (plugin_entry_exists(plugin_name_or_command)) {
-            printf("plugin \"%s\" already installed.\n", plugin_name_or_command);
+            printf("Plugin \"%s\" already installed.\n", plugin_name_or_command);
             return 1;
         }
         plugin_name = malloc(PATH_MAX);
