@@ -94,6 +94,23 @@ Can't remove non-installed plugin
   Plugin "non_installed_plugin" is not installed.
   [1]
 
+After being disabled, plugin is not listed anymore
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm disable "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm list
+  Nothing to show.
+  [1]
+
+After being removed, plugin is not listed anymore
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm list
+  Nothing to show.
+  [1]
+  
+
 Remove spurius files.
 
   $ zpm reset
