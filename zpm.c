@@ -380,7 +380,9 @@ int plugins_update_local_clone() {
 }
 
 void usage() {
-    printf("%s\n", "Usage:\n\tzpm 'zsh-users/zsh-syntax-highlighting'");
+    printf("%s\n", "Usage:\n\tzpm \"zsh-users/zsh-syntax-highlighting\"");
+    printf("%s\n", "\tzpm disable \"zsh-users/zsh-syntax-highlighting\"");
+    printf("%s\n", "\tzpm remove \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\nAvailable commands:\n\tzpm reset\n\tzpm list");
     printf("%s\n", "\tzpm update\n\tzpm help\n\tzpm save");
 }
