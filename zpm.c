@@ -218,6 +218,7 @@ int mkdir_p(const char *path) {
 }
 
 int rmdir_r(const char *path) {
+/*
     DIR *d = opendir(path);
     size_t path_len = strlen(path);
     int r = -1;
@@ -266,6 +267,19 @@ int rmdir_r(const char *path) {
     strncpy(c, path, strlen(path) - strlen(base));
     rmdir(c);
     return r;
+*/
+    char c[PATH_MAX];
+    strcpy(c, "rm -rf ");
+    strcat(c, path);
+    system(c);
+
+    char* base = strrchr(path, '/');
+    strcpy(c, "rmdir ");
+    strncat(c, path, strlen(path) - strlen(base));
+    strcat(c , " 2> /dev/null");
+    system(c);
+//    rmdir(c);
+    return 0;
 }
 
 int plugin_remove_entry(char* plugin_name, char* file_name) {
