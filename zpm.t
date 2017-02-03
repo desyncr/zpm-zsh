@@ -120,7 +120,7 @@ Plugin directory is properly unlinked after remove
 
 Parent directory is properly removed if necessary
   $ ls ~/.zpm/plugin/zsh-users
-  ls: cannot access '.*/.zpm/plugin/zsh-users': No such file or directory (re)
+  ls: cannot access '*.*/.zpm/plugin/zsh-users'*: No such file or directory (re)
   [2]
 
 Plugin directory is not removed after disable
