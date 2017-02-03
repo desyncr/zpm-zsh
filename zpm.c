@@ -550,6 +550,10 @@ int main(int argc, char* argv[]) {
         return plugin_print_list();
     } else if (strstr(plugin_name_or_command, "save")) {
         return plugin_print_script();
+    } else if (strstr(plugin_name_or_command, "disable")) {
+        return plugin_remove(argv[2], 0);
+    } else if (strstr(plugin_name_or_command, "remove")) {
+        return plugin_remove(argv[2], 1);
     } else if (strstr(plugin_name_or_command, "help")) {
         usage();
         return 0;
