@@ -1,0 +1,15 @@
+language: c
+
+compiler:
+  - clang
+  - gcc
+
+before_script:
+  - sudo apt-get install zsh
+
+install:
+  - sudo -H pip install cram
+
+script:
+  - sudo make install
+  - make test
