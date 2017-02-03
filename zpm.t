@@ -31,8 +31,8 @@ Subsequentially add a new item to the list.
 List command show list of installed plugins.
 
     $ ./zpm list
-    zsh-users/zsh-syntax-highlighting .*
-    rupa/z .*
+    zsh-users/zsh-syntax-highlighting
+    rupa/z
 
 Already cloned plugins show still display "installing..." text.
 
