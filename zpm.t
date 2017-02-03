@@ -115,14 +115,14 @@ Plugin directory is properly unlinked after remove
   $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
   $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
   $ ls ~/.zpm/plugins/zsh-users/zsh-syntax-highlighting
-  ls: cannot access '.*/.zpm/plugins/zsh-users/zsh-syntax-highlighting': No such file or directory (re)
+  ls: cannot access ?'(.*).*/.zpm/plugins/zsh-users/zsh-syntax-highlighting?'(.*): No such file or directory (re)
   [2]
 
 Parent directory is properly removed if necessary
   $ zpm "zsh-users/zsh-autosuggestions"         > /dev/null
   $ zpm remove "zsh-users/zsh-autosuggestions"  > /dev/null
   $ ls ~/.zpm/plugins/zsh-users
-  ls: cannot access '.*/.zpm/plugins/zsh-users': No such file or directory (re)
+  ls: cannot access ?'(.*).*/.zpm/plugins/zsh-users?'(.*): No such file or directory (re)
   [2]
 
 Plugin directory is not removed after disable
