@@ -342,7 +342,8 @@ char* get_zpm_plugin_list() {
     if (list != NULL) {
         fread(listing, 1, 1024, list);
         fclose(list);
-    } else {
+    }
+    if (!list || !strcmp(listing, "")) {
         strcpy(listing, "Nothing to show.");
     }
 
@@ -421,7 +422,7 @@ int plugin_print_list() {
 
     if (!strcmp(listing, "Nothing to show.")) {
         printf("%s\n", listing);
-        return -1;
+        return 1;
     }
     while (plugin_name) {
        char* hash = plugin_get_hash(plugin_name);
