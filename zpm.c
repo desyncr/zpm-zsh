@@ -217,6 +217,21 @@ int mkdir_p(const char *path) {
     return 0;
 }
 
+int rmdir_r(const char *path) {
+    char c[PATH_MAX];
+    strcpy(c, "rm -rf ");
+    strcat(c, path);
+    system(c);
+
+    char* base = strrchr(path, '/');
+    strcpy(c, "rmdir ");
+    strncat(c, path, strlen(path) - strlen(base));
+    strcat(c , " 2> /dev/null");
+    system(c);
+    return 0;
+}
+
+
 int local_clone_exists(char* plugin_name) {
     if (plugin_name[0] == '/') {
         return 0;
