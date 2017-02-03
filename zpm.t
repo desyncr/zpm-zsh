@@ -12,6 +12,7 @@ Command without arguments gives an error if there are no plugins.
   \tzpm list (esc)
   \tzpm update (esc)
   \tzpm help (esc)
+  \tzpm save (esc)
   [1]
 
 Command `list` without any plugin registered show a message.
@@ -84,7 +85,12 @@ Can install multiple plugins under the same user.
   zsh-autosuggestions (re)
   zsh-syntax-highlighting (re)
 
+Test error message when .zpm-init.zsh is absent.
+  $ zpm reset
+  $ zpm save
+  Could not open ".*". Check the file exists and can be read. (re)
+  [1]
+
 Remove spurius files.
 
   $ zpm reset
-
