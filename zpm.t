@@ -22,7 +22,7 @@ Command `list` without any plugin registered show a message.
   $ zpm reset
   $ zpm list
   Nothing to show.
-  [255]
+  [1]
 
 Can create a new list.
 
@@ -109,7 +109,43 @@ After being removed, plugin is not listed anymore
   $ zpm list
   Nothing to show.
   [1]
-  
+
+Plugin directory is properly unlinked after remove
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ ls ~/.zpm/plugin/zsh-users/zsh-syntax-highlighting
+  ls: cannot access '.*/.zpm/plugin/zsh-users/zsh-syntax-highlighting': No such file or directory (re)
+  [2]
+
+Parent directory is properly removed if necessary
+  $ ls ~/.zpm/plugin/zsh-users
+  ls: cannot access '.*/.zpm/plugin/zsh-users': No such file or directory (re)
+  [2]
+
+Plugin directory is not removed after disable
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm disable "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ ls ~/.zpm/plugin/zsh-users/zsh-syntax-highlighting
+  .* (re)
+  [2]
+
+Plugin can be properly enabled/installed after "disable"
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm disable "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm list
+  zsh-users/zsh-syntax-highlighting .* (re)
+
+Plugin parent directory is not removed if not empty
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm "zsh-users/zsh-autosuggestions"     > /dev/null
+  $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ ls ~/.zpm/plugins/zsh-users/
+  zsh-autosuggestions
 
 Remove spurius files.
 
