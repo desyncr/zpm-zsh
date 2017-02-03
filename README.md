@@ -65,6 +65,10 @@ make test
 
 You'll need zcram (or cram) installed and available in `PATH`.
 
+## Maintainers
+
+`zpm` is currently being actively developed by @desyncr and @fennecdjay.
+
 ## TODO
 
   - [X] Update command
