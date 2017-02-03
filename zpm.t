@@ -88,6 +88,12 @@ Avoid installing plugin twice
   Plugin "zsh-users/zsh-syntax-highlighting" already installed.
   [1]
 
+Can't remove non-installed plugin
+  $ zpm reset
+  $ zpm remove non_installed_plugin
+  Plugin "non_installed_plugin" is not installed.
+  [1]
+
 Remove spurius files.
 
   $ zpm reset
