@@ -446,7 +446,7 @@ int plugin_print_list() {
 
     if (!strcmp(listing, "Nothing to show.")) {
         printf("%s\n", listing);
-        return -1;
+        return 1;
     }
     while (plugin_name) {
        char* hash = plugin_get_hash(plugin_name);
