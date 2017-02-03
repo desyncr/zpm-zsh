@@ -83,7 +83,8 @@ Avoid installing plugin twice
   $ zpm reset
   $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
   $ zpm "zsh-users/zsh-syntax-highlighting"
-  plugin "zsh-users/zsh-syntax-highlighting" already installed.
+  Plugin "zsh-users/zsh-syntax-highlighting" already 
+installed.
   [1]
 
 Remove spurius files.
