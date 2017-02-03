@@ -405,7 +405,7 @@ int plugin_print_script() {
     FILE* store = fopen(zpm_init, "r");
 
     if (!store) {
-        printf("Could not open \"%s\". Check the file exists and can be read.", zpm_init);
+        printf("Could not open \"%s\". Check the file exists and can be read.\n", zpm_init);
         return 1;
     }
 
