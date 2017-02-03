@@ -53,24 +53,12 @@ List command show list of installed plugins.
   zsh-users/zsh-syntax-highlighting .* (re)
   rupa/z .* (re)
 
-Already cloned plugins show still display "installing..." text.
-
-  $ rm -rf ~/.zpm/plugins/rupa/
-  $ zpm reset
-  $ zpm "rupa/z"
-  Installing rupa/z... Done.
-
-  $ zpm "rupa/z"
-  Installing rupa/z... Done.
-
 Do not allow duplicate plugin entries/items.
 
-#  $ zpm reset
-#  $ zpm "rupa/z" > /dev/null
-#  $ zpm list
-#  rupa/z
-
+  $ zpm reset
   $ zpm "rupa/z" > /dev/null
+  $ zpm "rupa/z" > /dev/null
+  [1]
   $ zpm list
   rupa/z .* (re)
 
@@ -89,6 +77,13 @@ Test error message when .zpm-init.zsh is absent.
   $ zpm reset
   $ zpm save
   Could not open ".*". Check the file exists and can be read. (re)
+  [1]
+
+Avoid installing plugin twice
+  $ zpm reset
+  $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
+  $ zpm "zsh-users/zsh-syntax-highlighting"
+  Plugin "zsh-users/zsh-syntax-highlighting" already installed.
   [1]
 
 Remove spurius files.

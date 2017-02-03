@@ -254,6 +254,28 @@ int zpm_configuration_exists() {
     return 0;
 }
 
+int plugin_entry_exists(char* plugin_name) {
+    int ret = 0;
+    char* list = get_plugin_list_path();
+
+    FILE *file = fopen(list, "r");
+    if (!file) {
+        return 0;
+    }
+
+    char entry[PATH_MAX];
+    while (fgets(entry, PATH_MAX, file)) {
+        if(!strncmp(entry, plugin_name, strlen(plugin_name))) {
+            ret = 1;
+            break;
+        }
+    }
+
+    fclose(file);
+    free(list);
+    return ret;
+}
+
 char* generate_repository_url(char* plugin_name) {
     char* url = malloc(PATH_MAX);
     char* tmp = strstr(plugin_name, "/");
@@ -456,6 +478,10 @@ int main(int argc, char* argv[]) {
         return 0;
 
     } else {
+        if (plugin_entry_exists(plugin_name_or_command)) {
+            printf("Plugin \"%s\" already installed.\n", plugin_name_or_command);
+            return 1;
+        }
         plugin_name = malloc(PATH_MAX);
         strcpy(plugin_name, plugin_name_or_command);
     }
