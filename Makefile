@@ -1,13 +1,16 @@
+PREFIX ?= /usr/local
+
 make:
 	gcc -Wall -o zpm -g zpm.c
 
-test: make
-	zcram ./zpm.t
+test:
+	tests/setup.sh
+	ZPM_TEST_REPOS=/tmp/zpm-test-suite/repositories cram -v tests/*.t -v
 	
 install: make
-	cp zpm /usr/local/bin/zpm
-	chmod u+x /usr/local/bin/zpm
+	cp zpm ${PREFIX}/bin/zpm
+	chmod u+x ${PREFIX}/bin/zpm
 
 uninstall:
-	rm /usr/local/bin/zpm
+	rm ${PREFIX}/bin/zpm
 

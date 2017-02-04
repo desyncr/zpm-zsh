@@ -1,0 +1,17 @@
+language: c
+
+compiler:
+  - clang
+  - gcc
+
+install:
+  - sudo -H pip install cram
+
+before_script:
+  - sudo apt-get install zsh
+  - git config --global user.email "you@example.com"
+  - git config --global user.name "Your Name"
+
+script:
+  - sudo make install
+  - make test
