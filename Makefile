@@ -5,7 +5,7 @@ make:
 
 test:
 	tests/setup.sh
-	ZPM_TEST_REPOS=/tmp/zpm-test-suite/repositories cram -v tests/*.t
+	ZPM_TEST_REPOS=/tmp/zpm-test-suite/repositories cram -v tests/*.t -v
 	
 install: make
 	cp zpm ${PREFIX}/bin/zpm
