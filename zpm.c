@@ -344,12 +344,13 @@ int plugins_update_local_clone() {
     return ret;
 }
 
-void usage() {
+int usage(char* ret) {
     printf("%s\n", "Usage:\n\tzpm \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\tzpm disable \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\tzpm remove \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\nAvailable commands:\n\tzpm reset\n\tzpm list");
     printf("%s\n", "\tzpm update\n\tzpm help\n\tzpm save");
+    return ret ? 0 : 1;
 }
 
 char* plugin_get_hash(char* plugin_name) {
@@ -508,8 +509,7 @@ void zpm_config_init() {
 
 int main(int argc, char* argv[]) {
     if (argc <= 1) {
-        usage();
-        return 1;
+        return usage(NULL);
     }
 
     char* plugin_name_or_command = argv[1];
@@ -530,9 +530,7 @@ int main(int argc, char* argv[]) {
     } else if (strstr(plugin_name_or_command, "remove")) {
         return plugin_remove(argv[2], 1);
     } else if (strstr(plugin_name_or_command, "help")) {
-        usage();
-        return 0;
-
+        return usage(argv[1]);
     } else {
         if (plugin_entry_exists(plugin_name_or_command)) {
             printf("Plugin \"%s\" already installed.\n", plugin_name_or_command);
