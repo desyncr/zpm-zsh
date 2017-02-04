@@ -511,33 +511,31 @@ int main(int argc, char* argv[]) {
     if (argc <= 1) {
         return usage(NULL);
     }
-
-    char* plugin_name_or_command = argv[1];
     char* plugin_name = NULL;
 
     zpm_config_init();
 
-    if (strstr(plugin_name_or_command, "reset")) {
+    if (strstr(argv[1], "reset")) {
         return plugin_reset();
-    } else if (strstr(plugin_name_or_command, "update")) {
+    } else if (strstr(argv[1], "update")) {
         return plugins_update_local_clone();
-    } else if (strstr(plugin_name_or_command, "list")) {
+    } else if (strstr(argv[1], "list")) {
         return plugin_print_list();
-    } else if (strstr(plugin_name_or_command, "save")) {
+    } else if (strstr(argv[1], "save")) {
         return plugin_print_script();
-    } else if (strstr(plugin_name_or_command, "disable")) {
+    } else if (strstr(argv[1], "disable")) {
         return plugin_remove(argv[2], 0);
-    } else if (strstr(plugin_name_or_command, "remove")) {
+    } else if (strstr(argv[1], "remove")) {
         return plugin_remove(argv[2], 1);
-    } else if (strstr(plugin_name_or_command, "help")) {
+    } else if (strstr(argv[1], "help")) {
         return usage(argv[1]);
     } else {
-        if (plugin_entry_exists(plugin_name_or_command)) {
-            printf("Plugin \"%s\" already installed.\n", plugin_name_or_command);
+        if (plugin_entry_exists(argv[1])) {
+            printf("Plugin \"%s\" already installed.\n", argv[1]);
             return 1;
         }
         plugin_name = malloc(PATH_MAX);
-        strcpy(plugin_name, plugin_name_or_command);
+        strcpy(plugin_name, argv[1]);
     }
 
     int status = strstr(plugin_name, "/") ? 0 : -1;
