@@ -325,7 +325,7 @@ int plugins_update_local_clone() {
 
     if (!strcmp(listing, "Nothing to show.")) {
       printf("Nothing to update.");
-      return -1;
+      return 1;
     }
     printf("Updating plugins ...\n");
     while (plugin_name) {
@@ -483,6 +483,14 @@ int plugin_remove(char* plugin_name, int uninstall) {
     return 0;
 }
 
+int plugin_reset() {
+    char* plugin_list = get_plugin_list_path();
+    unlink(plugin_list);
+    unlink(zpm_init);
+    free(plugin_list);
+    return 0;
+}
+
 void zpm_config_init() {
     char* home = getenv("HOME");
     char zpm_conf[PATH_MAX];
@@ -510,16 +518,9 @@ int main(int argc, char* argv[]) {
     zpm_config_init();
 
     if (strstr(plugin_name_or_command, "reset")) {
-        char* plugin_list = get_plugin_list_path();
-        unlink(plugin_list);
-        unlink(zpm_init);
-        free(plugin_list);
-        return 0;
-
+        return plugin_reset();
     } else if (strstr(plugin_name_or_command, "update")) {
-        plugins_update_local_clone();
-        return 0;
-
+        return plugins_update_local_clone();
     } else if (strstr(plugin_name_or_command, "list")) {
         return plugin_print_list();
     } else if (strstr(plugin_name_or_command, "save")) {
