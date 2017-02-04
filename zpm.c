@@ -223,7 +223,6 @@ int rmdir_r(const char *path) {
     return 0;
 }
 
-
 int local_clone_exists(char* plugin_name) {
     if (plugin_name[0] == '/') {
         return 0;
@@ -246,19 +245,6 @@ int local_clone_exists(char* plugin_name) {
     free(plugin_path);
 
     return 1;
-}
-
-int zpm_configuration_exists() {
-    char* zpm_init_path = get_zpm_init_path();
-
-    FILE *file;
-    if ((file = fopen(zpm_init_path, "r")) == NULL) {
-        return -1;
-    } else {
-        fclose(file);
-    }
-
-    return 0;
 }
 
 int plugin_entry_exists(char* plugin_name) {
