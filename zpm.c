@@ -507,39 +507,14 @@ void zpm_config_init() {
     strcat(zpm_list, "/.zpm/plugin_list");
 }
 
-int main(int argc, char* argv[]) {
-    if (argc <= 1) {
-        return usage(NULL);
-    }
-    char* plugin_name = NULL;
-
-    zpm_config_init();
-
-    if (strstr(argv[1], "reset")) {
-        return plugin_reset();
-    } else if (strstr(argv[1], "update")) {
-        return plugins_update_local_clone();
-    } else if (strstr(argv[1], "list")) {
-        return plugin_print_list();
-    } else if (strstr(argv[1], "save")) {
-        return plugin_print_script();
-    } else if (strstr(argv[1], "disable")) {
-        return plugin_remove(argv[2], 0);
-    } else if (strstr(argv[1], "remove")) {
-        return plugin_remove(argv[2], 1);
-    } else if (strstr(argv[1], "help")) {
-        return usage(argv[1]);
-    } else {
-        if (plugin_entry_exists(argv[1])) {
-            printf("Plugin \"%s\" already installed.\n", argv[1]);
-            return 1;
-        }
-        plugin_name = malloc(PATH_MAX);
-        strcpy(plugin_name, argv[1]);
-    }
-
+int plugin_install(char* plugin_name) {
     int status = strstr(plugin_name, "/") ? 0 : -1;
     char install[PATH_MAX];
+    
+    if (plugin_entry_exists(plugin_name)) {
+        printf("Plugin \"%s\" already installed.\n", plugin_name);
+        return 1;
+    }
     strcpy(install, "Installing ");
     strcat(install, plugin_name);
     strcat(install, "... ");
@@ -557,8 +532,31 @@ int main(int argc, char* argv[]) {
     } else {
         printf("%s\n", "Error!");
     }
-
-    free(plugin_name);
     return status;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc <= 1) {
+        return usage(NULL);
+    }
+    zpm_config_init();
+
+    if (strstr(argv[1], "reset")) {
+        return plugin_reset();
+    } else if (strstr(argv[1], "update")) {
+        return plugins_update_local_clone();
+    } else if (strstr(argv[1], "list")) {
+        return plugin_print_list();
+    } else if (strstr(argv[1], "save")) {
+        return plugin_print_script();
+    } else if (strstr(argv[1], "disable")) {
+        return plugin_remove(argv[2], 0);
+    } else if (strstr(argv[1], "remove")) {
+        return plugin_remove(argv[2], 1);
+    } else if (strstr(argv[1], "help")) {
+        return usage(argv[1]);
+    } else {
+        return plugin_install(argv[1]);
+    }
 }
 
