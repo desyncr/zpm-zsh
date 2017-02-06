@@ -13,6 +13,9 @@
 #define TRUE 1
 #define FALSE 0
 
+static char zpm_init[PATH_MAX];
+static char zpm_list[PATH_MAX];
+
 char* generate_plugin_path(char* plugin_name) {
     if (plugin_name[0] == '/') {
         return strdup(plugin_name);
@@ -59,15 +62,6 @@ char* get_plugin_entry_point(char* plugin_name) {
     return plugin_entry_point;
 }
 
-char* get_zpm_init_path() {
-    char* zpm_init = malloc(PATH_MAX);
-
-    strcpy(zpm_init, getenv("HOME"));
-    strcat(zpm_init, "/.zpm-init.zsh");
-
-    return zpm_init;
-}
-
 char* get_plugin_entry(char* plugin_name) {
     char* plugin_entry = malloc(PATH_MAX);
 
@@ -87,7 +81,6 @@ char* get_plugin_entry(char* plugin_name) {
 }
 
 int generate_plugin_entry(char* plugin_name) {
-    char* zpm_init = get_zpm_init_path();
     FILE* store = fopen(zpm_init,"ab+");
 
     char* plugin_entry = get_plugin_entry(plugin_name);
@@ -95,7 +88,6 @@ int generate_plugin_entry(char* plugin_name) {
     fread(plugin_entry_list, 1, PATH_MAX, store);
     fclose(store);
     if (strstr(plugin_entry_list, plugin_entry)) {
-        free(zpm_init);
         free(plugin_entry);
         return 0;
     }
@@ -123,25 +115,19 @@ int generate_plugin_entry(char* plugin_name) {
 
     int status = fwrite(plugin_entry, strlen(plugin_entry), 1, init);
     fclose(init);
-
-    free(zpm_init);
     free(plugin_entry);
     return status;
-}
-
-char* get_plugin_list_path() {
-    char* plugin_list = malloc(PATH_MAX);
-
-    strcpy(plugin_list, getenv("HOME"));
-    strcat(plugin_list, "/.zpm/.plugin_list");
-
-    return plugin_list;
 }
 
 int plugin_list_add_item(char* plugin_name) {
     int ret;
     char plugin_item[PATH_MAX];
     char plugin_item_list[PATH_MAX];
+    FILE* store = fopen(zpm_list,"ab+");
+
+    if (!store) {
+        return -1;
+    }
 
     if (!strncmp(plugin_name, "github.com", 11)) {
         strcpy(plugin_item, plugin_name + 11);
@@ -150,22 +136,12 @@ int plugin_list_add_item(char* plugin_name) {
     }
     strcat(plugin_item, "\n");
 
-    char* plugin_list = get_plugin_list_path();
-    FILE* store = fopen(plugin_list,"ab+");
-
-    if (!store) {
-        return -1;
-    }
-
-
-
     fread(plugin_item_list, 1, PATH_MAX, store);
     if (strstr(plugin_item_list, plugin_item)) {
         return 0;
     }
 
     ret = fwrite(plugin_item, strlen(plugin_item), 1, store);
-    free(plugin_list);
     fclose(store);
     return ret;
 }
@@ -223,7 +199,6 @@ int rmdir_r(const char *path) {
     return 0;
 }
 
-
 int local_clone_exists(char* plugin_name) {
     if (plugin_name[0] == '/') {
         return 0;
@@ -248,24 +223,10 @@ int local_clone_exists(char* plugin_name) {
     return 1;
 }
 
-int zpm_configuration_exists() {
-    char* zpm_init_path = get_zpm_init_path();
-
-    FILE *file;
-    if ((file = fopen(zpm_init_path, "r")) == NULL) {
-        return -1;
-    } else {
-        fclose(file);
-    }
-
-    return 0;
-}
-
 int plugin_entry_exists(char* plugin_name) {
     int ret = 0;
-    char* list = get_plugin_list_path();
 
-    FILE *file = fopen(list, "r");
+    FILE *file = fopen(zpm_list, "r");
     if (!file) {
         return 0;
     }
@@ -279,7 +240,6 @@ int plugin_entry_exists(char* plugin_name) {
     }
 
     fclose(file);
-    free(list);
     return ret;
 }
 
@@ -323,11 +283,10 @@ int locally_clone_plugin(char* plugin_name) {
 }
 
 char* get_zpm_plugin_list() {
-    char* plugin_list_path = get_plugin_list_path();
     char* listing = malloc(PATH_MAX);
     FILE* list;
 
-    list = fopen(plugin_list_path, "rb");
+    list = fopen(zpm_list, "rb");
     if (list != NULL) {
         fread(listing, 1, PATH_MAX, list);
         fclose(list);
@@ -335,8 +294,6 @@ char* get_zpm_plugin_list() {
     if (!list || !strcmp(listing, "")) {
         strcpy(listing, "Nothing to show.");
     }
-
-    free(plugin_list_path);
 
     return listing;
 }
@@ -349,7 +306,7 @@ int plugins_update_local_clone() {
 
     if (!strcmp(listing, "Nothing to show.")) {
       printf("Nothing to update.");
-      return -1;
+      return 1;
     }
     printf("Updating plugins ...\n");
     while (plugin_name) {
@@ -368,12 +325,13 @@ int plugins_update_local_clone() {
     return ret;
 }
 
-void usage() {
+int usage(char* ret) {
     printf("%s\n", "Usage:\n\tzpm \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\tzpm disable \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\tzpm remove \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\nAvailable commands:\n\tzpm reset\n\tzpm list");
     printf("%s\n", "\tzpm update\n\tzpm help\n\tzpm save");
+    return ret ? 0 : 1;
 }
 
 char* plugin_get_hash(char* plugin_name) {
@@ -429,7 +387,6 @@ int plugin_print_list() {
 
 int plugin_print_script() {
     char entry[PATH_MAX];
-    char* zpm_init = get_plugin_list_path();
     FILE* store = fopen(zpm_init, "r");
 
     if (!store) {
@@ -443,7 +400,6 @@ int plugin_print_script() {
         strncpy(plugin, entry, strlen(entry) -1);
         printf("zpm \"%s\"\n", plugin);
     }
-    free(zpm_init);
     fclose(store);
     return 0;
 }
@@ -484,7 +440,6 @@ int plugin_remove_entry(char* plugin_name, char* file_name) {
     fclose(store);
     fclose(tmp);
     unlink("/tmp/.zpm_tmp");
-    free(file_name);
     return 0;
 }
 
@@ -497,8 +452,8 @@ int plugin_remove(char* plugin_name, int uninstall) {
         printf("Plugin \"%s\" is not installed.\n", plugin_name);
         return 1;
     }
-    plugin_remove_entry(plugin_name, get_zpm_init_path());
-    plugin_remove_entry(plugin_name, get_plugin_list_path());
+    plugin_remove_entry(plugin_name, zpm_init);
+    plugin_remove_entry(plugin_name, zpm_list);
     if (uninstall && plugin_name[0] != '/') {
         char plugin_path[PATH_MAX];
 
@@ -510,56 +465,35 @@ int plugin_remove(char* plugin_name, int uninstall) {
     return 0;
 }
 
-int main(int argc, char* argv[]) {
-    if (argc <= 1) {
-        usage();
-        return 1;
-    }
+int plugin_reset() {
+    unlink(zpm_init);
+    unlink(zpm_list);
+    return 0;
+}
 
-    char* plugin_name_or_command = argv[1];
-    char* plugin_name = NULL;
-
+void zpm_config_init() {
+    char* home = getenv("HOME");
     char zpm_conf[PATH_MAX];
+
     strcpy(zpm_conf, getenv("HOME"));
     strcat(zpm_conf, "/.zpm");
     mkdir(zpm_conf, S_IRWXU);
 
-    if (strstr(plugin_name_or_command, "reset")) {
-        char* plugin_list = get_plugin_list_path();
-        char* zpm_init = get_zpm_init_path();
-        unlink(plugin_list);
-        unlink(zpm_init);
-        free(plugin_list);
-        free(zpm_init);
-        return 0;
+    strcpy(zpm_init, home);
+    strcat(zpm_init, "/.zpm-init.zsh");
 
-    } else if (strstr(plugin_name_or_command, "update")) {
-        plugins_update_local_clone();
-        return 0;
+    strcpy(zpm_list, home);
+    strcat(zpm_list, "/.zpm/plugin_list");
+}
 
-    } else if (strstr(plugin_name_or_command, "list")) {
-        return plugin_print_list();
-    } else if (strstr(plugin_name_or_command, "save")) {
-        return plugin_print_script();
-    } else if (strstr(plugin_name_or_command, "disable")) {
-        return plugin_remove(argv[2], 0);
-    } else if (strstr(plugin_name_or_command, "remove")) {
-        return plugin_remove(argv[2], 1);
-    } else if (strstr(plugin_name_or_command, "help")) {
-        usage();
-        return 0;
-
-    } else {
-        if (plugin_entry_exists(plugin_name_or_command)) {
-            printf("Plugin \"%s\" already installed.\n", plugin_name_or_command);
-            return 1;
-        }
-        plugin_name = malloc(PATH_MAX);
-        strcpy(plugin_name, plugin_name_or_command);
-    }
-
+int plugin_install(char* plugin_name) {
     int status = strstr(plugin_name, "/") ? 0 : -1;
     char install[PATH_MAX];
+    
+    if (plugin_entry_exists(plugin_name)) {
+        printf("Plugin \"%s\" already installed.\n", plugin_name);
+        return 1;
+    }
     strcpy(install, "Installing ");
     strcat(install, plugin_name);
     strcat(install, "... ");
@@ -577,8 +511,31 @@ int main(int argc, char* argv[]) {
     } else {
         printf("%s\n", "Error!");
     }
-
-    free(plugin_name);
     return status;
+}
+
+int main(int argc, char* argv[]) {
+    if (argc <= 1) {
+        return usage(NULL);
+    }
+    zpm_config_init();
+
+    if (strstr(argv[1], "reset")) {
+        return plugin_reset();
+    } else if (strstr(argv[1], "update")) {
+        return plugins_update_local_clone();
+    } else if (strstr(argv[1], "list")) {
+        return plugin_print_list();
+    } else if (strstr(argv[1], "save")) {
+        return plugin_print_script();
+    } else if (strstr(argv[1], "disable")) {
+        return plugin_remove(argv[2], 0);
+    } else if (strstr(argv[1], "remove")) {
+        return plugin_remove(argv[2], 1);
+    } else if (strstr(argv[1], "help")) {
+        return usage(argv[1]);
+    } else {
+        return plugin_install(argv[1]);
+    }
 }
 
