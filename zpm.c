@@ -139,9 +139,10 @@ int plugin_list_add_item(char* plugin_name) {
     }
     strcat(plugin_item, "\n");
 
-    fread(plugin_item_list, 1, PATH_MAX, store);
-    if (strstr(plugin_item_list, plugin_item)) {
-        return 0;
+    while (fgets(plugin_item_list, 1, PATH_MAX, store)) {
+        if (strstr(plugin_item_list, plugin_item)) {
+            return 0;
+        }
     }
 
     ret = fwrite(plugin_item, strlen(plugin_item), 1, store);
