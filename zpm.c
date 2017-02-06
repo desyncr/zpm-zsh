@@ -141,6 +141,7 @@ int plugin_list_add_item(char* plugin_name) {
 
     while (fgets(plugin_item_list, PATH_MAX, store)) {
         if (strstr(plugin_item_list, plugin_item)) {
+            fclose(store);
             return 0;
         }
     }
