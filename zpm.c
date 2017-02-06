@@ -85,12 +85,15 @@ int generate_plugin_entry(char* plugin_name) {
 
     char* plugin_entry = get_plugin_entry(plugin_name);
     char  plugin_entry_list[PATH_MAX];
-    fread(plugin_entry_list, 1, PATH_MAX, store);
-    fclose(store);
-    if (strstr(plugin_entry_list, plugin_entry)) {
-        free(plugin_entry);
-        return 0;
+
+    while (fgets(plugin_entry_list, PATH_MAX, store)) {
+        if (strstr(plugin_entry_list, plugin_entry)) {
+            free(plugin_entry);
+            fclose(store);
+            return 0;
+        }
     }
+    fclose(store);
     FILE *init = fopen(zpm_init, "r+");
     fseek(init, -54, SEEK_END);
     strcat(plugin_entry, "fpath+=");
@@ -136,9 +139,11 @@ int plugin_list_add_item(char* plugin_name) {
     }
     strcat(plugin_item, "\n");
 
-    fread(plugin_item_list, 1, PATH_MAX, store);
-    if (strstr(plugin_item_list, plugin_item)) {
-        return 0;
+    while (fgets(plugin_item_list, PATH_MAX, store)) {
+        if (strstr(plugin_item_list, plugin_item)) {
+            fclose(store);
+            return 0;
+        }
     }
 
     ret = fwrite(plugin_item, strlen(plugin_item), 1, store);
@@ -283,15 +288,28 @@ int locally_clone_plugin(char* plugin_name) {
 }
 
 char* get_zpm_plugin_list() {
-    char* listing = malloc(PATH_MAX);
+    char* listing = NULL;
     FILE* list;
 
     list = fopen(zpm_list, "rb");
     if (list != NULL) {
-        fread(listing, 1, PATH_MAX, list);
-        fclose(list);
+        char  tmp[PATH_MAX];
+        memset(tmp, 0, PATH_MAX);
+        while (fgets(tmp, PATH_MAX, list)) {
+            if (!listing) {
+               listing = strdup(tmp);
+            } else {
+                char c[strlen(listing)];
+                strcpy(c, listing);
+                listing = realloc(listing, strlen(listing) + strlen(tmp));
+                sprintf(listing, "%s%s", c, tmp);
+            }
+       }
+       fclose(list);
     }
-    if (!list || !strcmp(listing, "")) {
+    if (!list || !listing) {
+        listing = strdup("Nothing to show.");
+    } else if (!strcmp(listing, "")) {
         strcpy(listing, "Nothing to show.");
     }
 
