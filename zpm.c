@@ -87,7 +87,7 @@ int generate_plugin_entry(char* plugin_name) {
     char  plugin_entry_list[PATH_MAX];
 
     while (fgets(plugin_entry_list, PATH_MAX, store)) {
-            if (strstr(plugin_entry_list, plugin_entry)) {
+        if (strstr(plugin_entry_list, plugin_entry)) {
             free(plugin_entry);
             fclose(store);
             return 0;
