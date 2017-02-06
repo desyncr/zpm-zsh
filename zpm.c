@@ -85,12 +85,15 @@ int generate_plugin_entry(char* plugin_name) {
 
     char* plugin_entry = get_plugin_entry(plugin_name);
     char  plugin_entry_list[PATH_MAX];
-    fread(plugin_entry_list, 1, PATH_MAX, store);
-    fclose(store);
-    if (strstr(plugin_entry_list, plugin_entry)) {
-        free(plugin_entry);
-        return 0;
+
+    while (fgets(plugin_entry_list, PATH_MAX, store)) {
+            if (strstr(plugin_entry_list, plugin_entry)) {
+            free(plugin_entry);
+            fclose(store);
+            return 0;
+        }
     }
+    fclose(store);
     FILE *init = fopen(zpm_init, "r+");
     fseek(init, -54, SEEK_END);
     strcat(plugin_entry, "fpath+=");
