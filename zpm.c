@@ -139,7 +139,7 @@ int plugin_list_add_item(char* plugin_name) {
     }
     strcat(plugin_item, "\n");
 
-    while (fgets(plugin_item_list, 1, PATH_MAX, store)) {
+    while (fgets(plugin_item_list, PATH_MAX, store)) {
         if (strstr(plugin_item_list, plugin_item)) {
             return 0;
         }
@@ -287,15 +287,28 @@ int locally_clone_plugin(char* plugin_name) {
 }
 
 char* get_zpm_plugin_list() {
-    char* listing = malloc(PATH_MAX);
+    char* listing = NULL;
     FILE* list;
 
     list = fopen(zpm_list, "rb");
     if (list != NULL) {
-        fread(listing, 1, PATH_MAX, list);
-        fclose(list);
+        char  tmp[PATH_MAX];
+        memset(tmp, 0, PATH_MAX);
+        while (fgets(tmp, PATH_MAX, list)) {
+            if (!listing) {
+               listing = strdup(tmp);
+            } else {
+                char c[strlen(listing)];
+                strcpy(c, listing);
+                listing = realloc(listing, strlen(listing) + strlen(tmp));
+                sprintf(listing, "%s%s", c, tmp);
+            }
+       }
+       fclose(list);
     }
-    if (!list || !strcmp(listing, "")) {
+    if (!list || !listing) {
+        listing = strdup("Nothing to show.");
+    } else if (!strcmp(listing, "")) {
         strcpy(listing, "Nothing to show.");
     }
 
