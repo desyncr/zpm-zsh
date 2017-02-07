@@ -307,10 +307,8 @@ char* get_zpm_plugin_list() {
        }
        fclose(list);
     }
-    if (!list || !listing) {
+    if (!list || !listing || !strcmp(listing, "")) {
         listing = strdup("Nothing to show.");
-    } else if (!strcmp(listing, "")) {
-        strcpy(listing, "Nothing to show.");
     }
 
     return listing;
