@@ -1,5 +1,9 @@
 language: c
 
+os:
+  - linux
+  - osx
+
 compiler:
   - clang
   - gcc
@@ -8,10 +12,11 @@ install:
   - sudo -H pip install cram
 
 before_script:
-  - sudo apt-get install zsh
+  - if [ $TRAVIS_OS_NAME == 'osx' ]; then brew install zsh; else sudo apt-get install zsh; fi
   - git config --global user.email "you@example.com"
   - git config --global user.name "Your Name"
 
 script:
   - sudo make install
   - make test
+  
