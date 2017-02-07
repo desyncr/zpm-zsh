@@ -23,13 +23,11 @@ Plugin directory is properly unlinked after remove and parent directory is prope
   $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null
   $ zpm remove "zsh-users/zsh-autosuggestions" > /dev/null
 
-  $ ls $HOME/.zpm/plugins/zsh-users/zsh-syntax-highlighting
-  ls: .*zsh-syntax-highlighting.*: No such file or directory (re)
-  [2]
+  $ [ -d $HOME/.zpm/plugins/zsh-users/zsh-syntax-highlighting ]
+  [1]
 
-  $ ls $HOME/.zpm/plugins/zsh-users/
-  ls: .*zsh-users.*: No such file or directory (re)
-  [2]
+  $ [ -d $HOME/.zpm/plugins/zsh-users/ ]
+  [1]
 
 After being removed, plugin is not listed anymore
   $ zpm list
