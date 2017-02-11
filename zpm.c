@@ -10,6 +10,8 @@
 #include <dirent.h>
 #include <sys/stat.h>
 
+#include "url.h/url.h"
+
 #define TRUE 1
 #define FALSE 0
 
@@ -24,11 +26,13 @@ char* generate_plugin_path(char* plugin_name) {
     char* plugin_path = malloc(PATH_MAX);
     strcpy(plugin_path, getenv("HOME"));
     strcat(plugin_path, "/.zpm/plugins/");
-    if (strncmp(plugin_name, "github.com/", 11)) {
+    url_data_t *parsed = url_parse(plugin_name);
+    if (NULL == parsed) {
         strcat(plugin_path, plugin_name);
     } else {
-        strcat(plugin_path, plugin_name + 11);
+        strcat(plugin_path, parsed->path);
     }
+
     return plugin_path;
 }
 
@@ -131,11 +135,12 @@ int plugin_list_add_item(char* plugin_name) {
     if (!store) {
         return -1;
     }
-
-    if (!strncmp(plugin_name, "github.com", 11)) {
-        strcpy(plugin_item, plugin_name + 11);
-    } else {
+    url_data_t *parsed = url_parse(plugin_name);
+    if (NULL == parsed) {
         strcpy(plugin_item, plugin_name);
+    } else {
+        strcpy(plugin_item, parsed->host);
+        strcat(plugin_item, parsed->path);
     }
     strcat(plugin_item, "\n");
 
@@ -256,13 +261,14 @@ char* generate_repository_url(char* plugin_name) {
       return NULL;
       free(url);
     }
-    tmp = strstr(tmp + 1, "/");
-    if (!tmp) { 
+    url_data_t *parsed = url_parse(plugin_name);
+    if (NULL == parsed) {
         strcpy(url, "https://github.com/");
+        strcat(url, plugin_name);
     } else {
-        strcpy(url, "https://");
+        strcpy(url, plugin_name);
     }
-    strcat(url, plugin_name);
+ 
 
     return url;
 }
@@ -324,7 +330,7 @@ int plugins_update_local_clone() {
       printf("Nothing to update.");
       return 1;
     }
-    printf("Updating plugins ...\n");
+    printf("Updating plugins...\n");
     while (plugin_name) {
         if (plugin_name[0] == '/') {
             plugin_name = strtok(NULL, "\n");
@@ -391,7 +397,7 @@ int plugin_print_list() {
        char* hash = plugin_get_hash(plugin_name);
        printf("%s", plugin_name);
        if (hash) {
-           printf(" %s", hash);
+           printf("@%s", hash);
            free(hash);
        } else {
           printf("\n");
