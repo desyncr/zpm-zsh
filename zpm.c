@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 
 #include "url.h/url.h"
+#include "version.h"
 
 #define TRUE 1
 #define FALSE 0
@@ -352,7 +353,7 @@ int usage(char* ret) {
     printf("%s\n", "\tzpm disable \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\tzpm remove \"zsh-users/zsh-syntax-highlighting\"");
     printf("%s\n", "\nAvailable commands:\n\tzpm reset\n\tzpm list");
-    printf("%s\n", "\tzpm update\n\tzpm help\n\tzpm save");
+    printf("%s\n", "\tzpm update\n\tzpm save\n\tzpm help\n\tzpm version");
     return ret ? 0 : 1;
 }
 
@@ -557,6 +558,9 @@ int main(int argc, char* argv[]) {
         return plugin_remove(argv[2], 1);
     } else if (strstr(argv[1], "help")) {
         return usage(argv[1]);
+    } else if (strstr(argv[1], "version")) {
+        printf("%s\n", ZPM_VERSION);
+        return 0;
     } else {
         return plugin_install(argv[1]);
     }
