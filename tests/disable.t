@@ -20,6 +20,6 @@ Plugin can be properly enabled/installed after "disable"
   $ zpm disable "$ZPM_TEST_REPOS/example-plugin" > /dev/null
   $ zpm "$ZPM_TEST_REPOS/example-plugin" > /dev/null
   $ zpm list
-  .*example-plugin .* (re)
+  .*example-plugin@.* (re)
 
 

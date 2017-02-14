@@ -17,7 +17,7 @@ Plugin parent directory is not removed if not empty
 Plugin directory is properly unlinked after remove and parent directory is properly removed
 
   $ zpm list
-  zsh-users/zsh-autosuggestions .* (re)
+  zsh-users/zsh-autosuggestions@.* (re)
 
   $ zpm "zsh-users/zsh-syntax-highlighting" > /dev/null
   $ zpm remove "zsh-users/zsh-syntax-highlighting" > /dev/null

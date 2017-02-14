@@ -35,8 +35,8 @@ Subsequentially add a new item to the list.
 List command show list of installed plugins.
 
   $ zpm list
-  .*example-plugin .* (re)
-  .*example-theme .* (re)
+  .*example-plugin@.* (re)
+  .*example-theme@.* (re)
 
 Do not allow duplicate plugin entries/items.
 
@@ -45,6 +45,6 @@ Do not allow duplicate plugin entries/items.
   $ zpm "$ZPM_TEST_REPOS/example-theme" > /dev/null
   [1]
   $ zpm list
-  .*example-theme .* (re)
+  .*example-theme@.* (re)
 
 

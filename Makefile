@@ -1,7 +1,7 @@
 PREFIX ?= /usr/local
 
 make:
-	gcc -Wall -o zpm -g zpm.c
+	gcc -std=gnu99 -Wall -o zpm -g zpm.c
 
 test:
 	tests/setup.sh
