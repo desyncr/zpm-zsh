@@ -1,4 +1,4 @@
 Returns a version string
 
-  $ zpm version
+  $ $ZPM version
   *.*.* (re)
